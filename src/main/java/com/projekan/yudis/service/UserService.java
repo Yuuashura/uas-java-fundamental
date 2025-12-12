@@ -5,6 +5,7 @@ import com.projekan.yudis.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -89,6 +90,36 @@ public boolean register(User user) {
         // 4. Simpan
         userRepository.save(userLogin);
         return "OK";
+    }
+
+    // ... import List ...
+
+    // AMBIL SEMUA USER (Kecuali yang sedang login/admin utama jika mau, tapi ambil semua dulu)
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    // HAPUS USER
+    public void deleteUser(Integer id) {
+        userRepository.deleteById(id);
+    }
+
+    // UBAH ROLE JADI ADMIN (Promosi)
+    public void promoteToAdmin(Integer id) {
+        User u = userRepository.findById(id).orElse(null);
+        if (u != null) {
+            u.setRole(User.Role.ADMIN); // Pastikan Enum Role.ADMIN ada di Model User
+            userRepository.save(u);
+        }
+    }
+    
+    // UBAH JADI USER BIASA (Demosi)
+    public void demoteToUser(Integer id) {
+        User u = userRepository.findById(id).orElse(null);
+        if (u != null) {
+            u.setRole(User.Role.USER);
+            userRepository.save(u);
+        }
     }
     
 }

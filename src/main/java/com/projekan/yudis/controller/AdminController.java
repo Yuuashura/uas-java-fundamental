@@ -21,6 +21,9 @@ public class AdminController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private com.projekan.yudis.service.ProvinsiService provinsiService;
+
     // METHOD BANTUAN: Cek apakah user adalah ADMIN
     private boolean isAdmin(String token) {
         User user = userService.getUserFromToken(token);
@@ -147,5 +150,80 @@ public class AdminController {
 
         produkService.updateProduk(produk, file);
         return "redirect:/admin/produk";
+    }
+
+    // ... autowired userService, provinsiService ...
+
+    // ================= MANAJEMEN USER =================
+
+    @GetMapping("/users")
+    public String listUsers(Model model, @CookieValue(value = "USER_TOKEN", required = false) String token) {
+        if (!isAdmin(token)) return "redirect:/login";
+        
+        model.addAttribute("listUser", userService.getAllUsers());
+        return "admin/list_user";
+    }
+
+    @GetMapping("/users/hapus/{id}")
+    public String hapusUser(@PathVariable Integer id, @CookieValue(value = "USER_TOKEN", required = false) String token) {
+        if (!isAdmin(token)) return "redirect:/login";
+        userService.deleteUser(id);
+        return "redirect:/admin/users";
+    }
+
+    @GetMapping("/users/promote/{id}")
+    public String promoteUser(@PathVariable Integer id, @CookieValue(value = "USER_TOKEN", required = false) String token) {
+        if (!isAdmin(token)) return "redirect:/login";
+        userService.promoteToAdmin(id);
+        return "redirect:/admin/users";
+    }
+    
+    @GetMapping("/users/demote/{id}")
+    public String demoteUser(@PathVariable Integer id, @CookieValue(value = "USER_TOKEN", required = false) String token) {
+        if (!isAdmin(token)) return "redirect:/login";
+        userService.demoteToUser(id);
+        return "redirect:/admin/users";
+    }
+
+    // ================= MANAJEMEN PROVINSI =================
+
+    @GetMapping("/provinsi")
+    public String listProvinsi(Model model, @CookieValue(value = "USER_TOKEN", required = false) String token) {
+        if (!isAdmin(token)) return "redirect:/login";
+        
+        model.addAttribute("listProvinsi", provinsiService.getAllProvinsi());
+        return "admin/list_provinsi";
+    }
+
+    @GetMapping("/provinsi/tambah")
+    public String formTambahProvinsi(Model model, @CookieValue(value = "USER_TOKEN", required = false) String token) {
+        if (!isAdmin(token)) return "redirect:/login";
+        
+        model.addAttribute("provinsi", new com.projekan.yudis.model.Provinsi());
+        return "admin/form_provinsi";
+    }
+
+    @GetMapping("/provinsi/edit/{id}")
+    public String formEditProvinsi(@PathVariable Integer id, Model model, @CookieValue(value = "USER_TOKEN", required = false) String token) {
+        if (!isAdmin(token)) return "redirect:/login";
+        
+        model.addAttribute("provinsi", provinsiService.getProvinsiById(id));
+        return "admin/form_provinsi";
+    }
+
+    @PostMapping("/provinsi/simpan")
+    public String simpanProvinsi(@ModelAttribute com.projekan.yudis.model.Provinsi provinsi, @CookieValue(value = "USER_TOKEN", required = false) String token) {
+        if (!isAdmin(token)) return "redirect:/login";
+        
+        provinsiService.saveProvinsi(provinsi);
+        return "redirect:/admin/provinsi";
+    }
+
+    @GetMapping("/provinsi/hapus/{id}")
+    public String hapusProvinsi(@PathVariable Integer id, @CookieValue(value = "USER_TOKEN", required = false) String token) {
+        if (!isAdmin(token)) return "redirect:/login";
+        
+        provinsiService.deleteProvinsi(id);
+        return "redirect:/admin/provinsi";
     }
 }

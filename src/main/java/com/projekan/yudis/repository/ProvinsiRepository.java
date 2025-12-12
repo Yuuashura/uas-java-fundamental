@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProvinsiRepository extends JpaRepository<Provinsi, Integer> {
+    // Kita pakai fungsi bawaan JpaRepository saja sudah cukup untuk CRUD standar
 }

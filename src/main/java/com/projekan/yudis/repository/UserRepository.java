@@ -12,4 +12,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     // Cari user berdasarkan token (saat cek cookie)
     Optional<User> findByAuthToken(String authToken);
+    
 }
