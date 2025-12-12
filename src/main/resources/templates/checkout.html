@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Checkout Pengiriman</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style> body { background-color: #f8f9fa; font-family: sans-serif; } </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <h2 class="fw-bold mb-4">Pengiriman & Pembayaran</h2>
+
+    <form action="/transaksi/proses" method="post">
+        <div class="row">
+            
+            <div class="col-md-7">
+                <div class="card p-4 border-0 shadow-sm mb-4">
+                    <h5 class="fw-bold mb-3">Alamat Tujuan</h5>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Alamat Lengkap</label>
+                        <textarea name="alamatLengkap" class="form-control" rows="3" placeholder="Jalan, RT/RW, No Rumah..." required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Pilih Provinsi (Ongkir)</label>
+                        <select name="idProvinsi" class="form-select" id="selectProvinsi" onchange="hitungGrandTotal()" required>
+                            <option value="0" data-ongkir="0">-- Pilih Provinsi --</option>
+                            <option th:each="p : ${listProvinsi}" 
+                                    th:value="${p.idProvinsi}" 
+                                    th:text="${p.namaProvinsi} + ' - Rp ' + ${p.hargaOngkir}"
+                                    th:data-ongkir="${p.hargaOngkir}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="card p-4 border-0 shadow-sm">
+                    <h5 class="fw-bold mb-3">Barang yang Dibeli</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center" th:each="item : ${listBarang}">
+                            <div>
+                                <span class="fw-bold" th:text="${item.produk.namaProduct}">Produk</span>
+                                <small class="text-muted d-block" th:text="${item.jumlah} + ' x Rp ' + ${item.harga}">1 x 10000</small>
+                                <input type="hidden" name="idKeranjang" th:value="${item.idKeranjang}">
+                            </div>
+                            <span class="fw-bold" th:text="'Rp ' + ${item.harga * item.jumlah}">Rp 0</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <div class="card p-4 border-0 shadow-sm bg-white">
+                    <h5 class="fw-bold mb-4">Rincian Biaya</h5>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal Barang</span>
+                        <span class="fw-bold" th:text="'Rp ' + ${subtotal}">Rp 0</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Biaya Ongkir</span>
+                        <span class="fw-bold text-success" id="displayOngkir">Rp 0</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-4">
+                        <span class="fs-5 fw-bold">Total Bayar</span>
+                        <span class="fs-4 fw-bold text-primary" id="displayGrandTotal">Rp 0</span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-3 fw-bold">BAYAR SEKARANG</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<input type="hidden" id="serverSubtotal" th:value="${subtotal}">
+
+<script>
+    function hitungGrandTotal() {
+        const select = document.getElementById('selectProvinsi');
+        const selectedOption = select.options[select.selectedIndex];
+        
+        // Ambil harga ongkir dari atribut data-ongkir
+        const ongkir = parseInt(selectedOption.getAttribute('data-ongkir')) || 0;
+        const subtotal = parseInt(document.getElementById('serverSubtotal').value);
+        const grandTotal = subtotal + ongkir;
+
+        // Update Tampilan
+        document.getElementById('displayOngkir').innerText = 'Rp ' + ongkir;
+        document.getElementById('displayGrandTotal').innerText = 'Rp ' + grandTotal;
+    }
+    
+    // Jalankan sekali saat load (biar kalau refresh angkanya bener)
+    hitungGrandTotal();
+</script>
+
+</body>
+</html>

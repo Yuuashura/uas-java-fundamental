@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin - Kelola Transaksi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f4f6f9; }
+        
+        /* Sidebar */
+        .sidebar { min-height: 100vh; background: #343a40; color: white; }
+        .nav-link { color: rgba(255,255,255,0.8); margin-bottom: 5px; border-radius: 5px; transition: 0.2s; }
+        .nav-link:hover, .nav-link.active { color: white; background: rgba(255,255,255,0.15); }
+        .badge-status { min-width: 90px; }
+
+        /* Style Thumbnail Gambar Admin */
+        .admin-thumb-container { 
+            display: flex; gap: 5px; overflow-x: auto; max-width: 180px; padding-bottom: 5px;
+        }
+        .admin-thumb { 
+            width: 45px; height: 45px; object-fit: cover; border-radius: 6px; border: 1px solid #dee2e6; flex-shrink: 0; 
+        }
+        /* Scrollbar Halus */
+        .admin-thumb-container::-webkit-scrollbar { height: 3px; }
+        .admin-thumb-container::-webkit-scrollbar-thumb { background: #adb5bd; border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row">
+        
+        <div class="col-md-2 sidebar p-4 d-none d-md-block">
+            <div class="d-flex align-items-center mb-4 text-white">
+                <i class="bi bi-shield-lock-fill fs-3 me-2 text-warning"></i>
+                <h5 class="fw-bold m-0">ADMIN</h5>
+            </div>
+            <nav class="nav flex-column mt-3">
+                <a class="nav-link" href="/admin/produk">
+                    <i class="bi bi-box-seam me-2"></i> Produk
+                </a>
+                <a class="nav-link active" href="/admin/transaksi">
+                    <i class="bi bi-receipt me-2"></i> Pesanan
+                </a>
+            </nav>
+            <hr class="border-secondary my-4">
+            <a class="nav-link text-danger" href="/logout">
+                <i class="bi bi-box-arrow-right me-2"></i> Keluar
+            </a>
+        </div>
+
+        <div class="col-md-10 p-5">
+            <h3 class="mb-4 fw-bold text-dark">Daftar Pesanan Masuk</h3>
+
+            <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+                <div class="card-body p-0">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light text-secondary">
+                            <tr>
+                                <th class="ps-4">ID</th>
+                                <th>Item</th> <th>Pembeli</th>
+                                <th>Tanggal</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th class="text-end pe-4">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="trx : ${listTransaksi}">
+                                <td class="ps-4 fw-bold text-muted" th:text="'#' + ${trx.idTransaksi}">#1</td>
+                                
+                                <td>
+                                    <div class="admin-thumb-container">
+                                        <div th:each="detail : ${trx.details}" class="position-relative">
+                                            <img th:if="${detail.produk.gambarProduct != null}"
+                                                 th:src="'data:image/jpeg;base64,' + ${detail.produk.gambarProduct}"
+                                                 class="admin-thumb"
+                                                 th:title="${detail.produk.namaProduct}">
+                                            <div th:unless="${detail.produk.gambarProduct != null}" class="admin-thumb bg-light"></div>
+                                            
+                                            <span th:if="${detail.jumlah > 1}" 
+                                                  th:text="${detail.jumlah}"
+                                                  class="position-absolute top-0 end-0 badge bg-danger rounded-circle p-0 d-flex justify-content-center align-items-center border border-white"
+                                                  style="width: 14px; height: 14px; font-size: 8px;">2</span>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="fw-bold text-dark" th:text="${trx.user.namaLengkap}">Nama</div>
+                                    <small class="text-muted" th:text="${trx.user.noHp}">0812...</small>
+                                </td>
+                                <td class="small text-muted" th:text="${#temporals.format(trx.tanggalTransaksi, 'dd/MM HH:mm')}">12/12</td>
+                                <td class="fw-bold text-primary" th:text="'Rp ' + ${trx.grandTotal}">Rp 0</td>
+                                
+                                <td>
+                                    <span th:if="${trx.status.name() == 'PENDING'}" class="badge bg-warning text-dark badge-status">PENDING</span>
+                                    <span th:if="${trx.status.name() == 'PAID'}" class="badge bg-success badge-status">LUNAS</span>
+                                    <span th:if="${trx.status.name() == 'SENT'}" class="badge bg-info text-dark badge-status">DIKIRIM</span>
+                                    <span th:if="${trx.status.name() == 'DONE'}" class="badge bg-primary badge-status">SELESAI</span>
+                                    <span th:if="${trx.status.name() == 'CANCEL'}" class="badge bg-danger badge-status">BATAL</span>
+                                </td>
+                                
+                                <td class="text-end pe-4">
+                                    <div th:if="${trx.status.name() == 'PENDING'}">
+                                        <a th:href="@{/admin/transaksi/status/{id}?status=PAID(id=${trx.idTransaksi})}" 
+                                           class="btn btn-success btn-sm me-1" title="Terima Pembayaran">
+                                            <i class="bi bi-check-lg"></i>
+                                        </a>
+                                        <a th:href="@{/admin/transaksi/status/{id}?status=CANCEL(id=${trx.idTransaksi})}" 
+                                           class="btn btn-outline-danger btn-sm" title="Tolak"
+                                           onclick="return confirm('Tolak pesanan ini?')">
+                                            <i class="bi bi-x-lg"></i>
+                                        </a>
+                                    </div>
+
+                                    <div th:if="${trx.status.name() == 'PAID'}">
+                                        <a th:href="@{/admin/transaksi/status/{id}?status=SENT(id=${trx.idTransaksi})}" 
+                                           class="btn btn-primary btn-sm px-3" title="Kirim Resi">
+                                            <i class="bi bi-truck me-1"></i> Kirim
+                                        </a>
+                                    </div>
+
+                                    <span th:if="${trx.status.name() == 'SENT'}" class="text-muted small fst-italic">Menunggu Diterima</span>
+                                    <span th:if="${trx.status.name() == 'DONE'}" class="text-success small fw-bold"><i class="bi bi-check-all"></i> Tuntas</span>
+                                    <span th:if="${trx.status.name() == 'CANCEL'}" class="text-muted small">Dibatalkan</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

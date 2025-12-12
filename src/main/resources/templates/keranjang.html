@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Keranjang Belanja - Toko Yudis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; }
+        .navbar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-custom { border: none; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+        .img-thumb { width: 80px; height: 80px; object-fit: cover; border-radius: 10px; border: 1px solid #eee; }
+        .btn-checkout {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            border: none; color: white; border-radius: 50px; font-weight: 600; transition: 0.3s;
+        }
+        .btn-checkout:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4); color: white; }
+        .btn-checkout:disabled { background: #ccc; transform: none; box-shadow: none; cursor: not-allowed; }
+        .sticky-summary { position: sticky; top: 100px; }
+        .form-check-input { width: 1.3em; height: 1.3em; cursor: pointer; border: 2px solid #ccc; }
+        .form-check-input:checked { background-color: #764ba2; border-color: #764ba2; }
+        .btn-qty { border-color: #dee2e6; color: #6c757d; }
+        .btn-qty:hover { background-color: #e9ecef; color: #000; }
+        
+        /* Hapus panah spin di input number Chrome/Safari */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark p-3 shadow-sm mb-5">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/"><i class="bi bi-chevron-left me-2"></i>Lanjut Belanja</a>
+        <span class="navbar-text text-white fw-bold">Keranjang Saya</span>
+    </div>
+</nav>
+
+<div class="container pb-5">
+    <form action="/checkout" method="get" id="formCheckout">
+
+        <div th:if="${listKeranjang.empty}" class="text-center py-5">
+            <div class="mb-4"><i class="bi bi-cart-x text-muted" style="font-size: 5rem; opacity: 0.3;"></i></div>
+            <h3 class="fw-bold text-dark">Keranjangmu Kosong</h3>
+            <p class="text-muted">Wah, belum ada barang nih. Yuk belanja dulu!</p>
+            <a href="/" class="btn btn-checkout px-5 py-2 mt-3">Mulai Belanja</a>
+        </div>
+
+        <div th:unless="${listKeranjang.empty}" class="row">
+            <div class="col-lg-8 mb-4">
+                <div class="card card-custom p-4 bg-white">
+                    <div class="d-flex align-items-center mb-4 border-bottom pb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="checkAll" onchange="toggleAll(this)">
+                            <label class="form-check-label fw-bold ms-2 cursor-pointer" for="checkAll">Pilih Semua</label>
+                        </div>
+                        <span class="ms-auto fw-bold text-muted">Item (<span th:text="${listKeranjang.size()}">0</span>)</span>
+                    </div>
+                    
+                    <div th:each="item : ${listKeranjang}" class="row align-items-center mb-4 border-bottom pb-4">
+                        <div class="col-1">
+                            <input class="form-check-input item-checkbox" type="checkbox" 
+                                   name="idKeranjang" 
+                                   th:value="${item.idKeranjang}"
+                                   th:data-subtotal="${item.harga * item.jumlah}"
+                                   onchange="hitungTotal()">
+                        </div>
+                        <div class="col-3 col-md-2">
+                            <img th:if="${item.produk.gambarProduct != null}" 
+                                 th:src="'data:image/jpeg;base64,' + ${item.produk.gambarProduct}" 
+                                 class="img-thumb">
+                            <div th:unless="${item.produk.gambarProduct != null}" class="img-thumb bg-light d-flex align-items-center justify-content-center text-muted small">No Img</div>
+                        </div>
+                        <div class="col-8 col-md-4">
+                            <h6 class="fw-bold m-0 text-dark" th:text="${item.produk.namaProduct}">Nama Produk</h6>
+                            <small class="text-muted" th:text="${item.produk.kategoriProduct}">Kategori</small>
+                            <div class="text-primary fw-bold mt-1" th:text="'Rp ' + ${item.harga}">Rp 0</div>
+                            <small class="text-danger" th:if="${item.jumlah >= item.produk.stock}">*Stok Maksimal</small>
+                        </div>
+
+                        <div class="col-6 col-md-3 mt-3 mt-md-0 d-flex justify-content-center">
+                            <div class="input-group input-group-sm" style="width: 110px;">
+                                <a th:href="@{/keranjang/ubah/{id}(id=${item.idKeranjang}, change=-1)}" 
+                                   class="btn btn-qty border" th:classappend="${item.jumlah <= 1} ? 'disabled' : ''">
+                                    <i class="bi bi-dash"></i>
+                                </a>
+                                
+                                <input type="number" class="form-control text-center bg-white border-top border-bottom" 
+                                       th:value="${item.jumlah}" 
+                                       min="1" th:max="${item.produk.stock}"
+                                       th:data-id="${item.idKeranjang}"
+                                       onchange="updateManual(this)"
+                                       style="font-weight: bold;">
+                                
+                                <a th:href="@{/keranjang/ubah/{id}(id=${item.idKeranjang}, change=1)}" 
+                                   class="btn btn-qty border" th:classappend="${item.jumlah >= item.produk.stock} ? 'disabled' : ''">
+                                    <i class="bi bi-plus"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-md-2 mt-3 mt-md-0 text-end">
+                            <a th:href="@{/keranjang/hapus/{id}(id=${item.idKeranjang})}" 
+                               class="text-danger fs-5" onclick="return confirm('Hapus barang ini?')" title="Hapus">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card card-custom p-4 bg-white sticky-summary">
+                    <h5 class="fw-bold mb-4">Ringkasan Belanja</h5>
+                    <div class="d-flex justify-content-between mb-4">
+                        <span class="text-muted">Total Harga</span>
+                        <span class="fw-bold text-primary fs-5" id="totalDisplay">Rp 0</span>
+                    </div>
+                    <button type="submit" id="btnCheckout" class="btn btn-checkout w-100 py-3 shadow-sm" disabled>
+                        Checkout (<span id="countDisplay">0</span>)
+                    </button>
+                    <div class="text-center mt-3 small text-muted"><i class="bi bi-shield-check me-1"></i> Pilih barang dulu untuk lanjut</div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    function toggleAll(source) {
+        const checkboxes = document.querySelectorAll('.item-checkbox');
+        checkboxes.forEach(cb => { cb.checked = source.checked; });
+        hitungTotal(); 
+    }
+
+    function hitungTotal() {
+        const checkboxes = document.querySelectorAll('.item-checkbox');
+        let total = 0;
+        let count = 0;
+        checkboxes.forEach(cb => {
+            if (cb.checked) {
+                total += parseInt(cb.getAttribute('data-subtotal'));
+                count++;
+            }
+        });
+        document.getElementById('totalDisplay').innerText = 'Rp ' + total.toLocaleString('id-ID');
+        document.getElementById('countDisplay').innerText = count;
+        
+        const btn = document.getElementById('btnCheckout');
+        count > 0 ? btn.removeAttribute('disabled') : btn.setAttribute('disabled', 'disabled');
+        
+        const checkAll = document.getElementById('checkAll');
+        checkAll.checked = Array.from(checkboxes).length > 0 && Array.from(checkboxes).every(cb => cb.checked);
+    }
+
+    // FUNGSI UPDATE MANUAL
+    function updateManual(inputElement) {
+        const idKeranjang = inputElement.getAttribute('data-id');
+        const jumlahBaru = inputElement.value;
+        // Redirect ke controller
+        window.location.href = '/keranjang/set/' + idKeranjang + '?jumlah=' + jumlahBaru;
+    }
+    
+    window.onload = hitungTotal;
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

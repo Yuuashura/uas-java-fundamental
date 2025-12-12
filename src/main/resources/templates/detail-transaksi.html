@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Nota Transaksi - Toko Yudis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f4f6f9; }
+        .card-invoice { border: none; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .bg-gradient-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .status-badge { font-size: 0.9rem; padding: 8px 15px; border-radius: 50px; }
+        .table-items td { padding: 15px 10px; vertical-align: middle; }
+    </style>
+</head>
+<body>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            
+            <div class="card card-invoice overflow-hidden">
+                
+                <div class="card-header bg-gradient-primary p-4 text-center">
+                    <h4 class="fw-bold m-0"><i class="bi bi-receipt me-2"></i>INVOICE</h4>
+                    <p class="m-0 opacity-75">ID Transaksi: <span th:text="'#' + ${transaksi.idTransaksi}">#1</span></p>
+                    
+                    <div class="mt-3">
+                        <span th:if="${transaksi.status.name() == 'PENDING'}" class="badge bg-warning text-dark status-badge">
+                            <i class="bi bi-clock-history"></i> MENUNGGU PEMBAYARAN
+                        </span>
+                        <span th:if="${transaksi.status.name() == 'PAID'}" class="badge bg-success status-badge">
+                            <i class="bi bi-check-circle-fill"></i> SUDAH DIBAYAR
+                        </span>
+                        <span th:if="${transaksi.status.name() == 'SENT'}" class="badge bg-info status-badge">
+                            <i class="bi bi-truck"></i> SEDANG DIKIRIM
+                        </span>
+                    </div>
+                </div>
+
+                <div class="card-body p-5">
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="text-muted text-uppercase small fw-bold">Penerima</h6>
+                            <p class="fw-bold mb-1" th:text="${transaksi.user.namaLengkap}">Nama User</p>
+                            <p class="mb-1" th:text="${transaksi.user.noHp}">0812xxxx</p>
+                            <p class="small text-muted" th:text="${transaksi.user.username}">Username</p>
+                        </div>
+                        <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                            <h6 class="text-muted text-uppercase small fw-bold">Alamat Pengiriman</h6>
+                            <p class="mb-1" th:text="${transaksi.alamatPengiriman}">Jl. Contoh No. 1</p>
+                            <p class="fw-bold text-primary" th:text="${transaksi.provinsi.namaProvinsi}">Jawa Barat</p>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <h6 class="fw-bold mb-3">Rincian Barang</h6>
+                    <div class="table-responsive">
+                        <table class="table table-items">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Produk</th>
+                                    <th class="text-center">Jml</th>
+                                    <th class="text-end">Harga</th>
+                                    <th class="text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="detail : ${detailTransaksi}"> 
+                                    <td>
+                                        <span class="fw-bold" th:text="${detail.produk.namaProduct}">Laptop</span>
+                                    </td>
+                                    <td class="text-center" th:text="${detail.jumlah}">1</td>
+                                    <td class="text-end" th:text="'Rp ' + ${detail.hargaSatuan}">Rp 10.000</td>
+                                    <td class="text-end fw-bold" th:text="'Rp ' + ${detail.subtotal}">Rp 10.000</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="row justify-content-end mt-3">
+                        <div class="col-md-5">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between px-0">
+                                    <span class="text-muted">Subtotal</span>
+                                    <span th:text="'Rp ' + ${transaksi.totalHargaBarang}">Rp 0</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between px-0">
+                                    <span class="text-muted">Ongkir (<span th:text="${transaksi.provinsi.namaProvinsi}">Prov</span>)</span>
+                                    <span th:text="'Rp ' + ${transaksi.totalOngkir}">Rp 0</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between px-0 fs-5 fw-bold text-primary">
+                                    <span>Total Bayar</span>
+                                    <span th:text="'Rp ' + ${transaksi.grandTotal}">Rp 0</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div th:if="${transaksi.status.name() == 'PENDING'}" class="alert alert-info mt-5 p-4 rounded-3">
+                        <h5 class="fw-bold"><i class="bi bi-wallet2 me-2"></i>Instruksi Pembayaran</h5>
+                        <p>Silakan transfer total tagihan ke salah satu rekening di bawah ini:</p>
+                        <div class="bg-white p-3 rounded border">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="fw-bold">BCA (Bank Central Asia)</span>
+                                <span class="badge bg-light text-dark border">Otani Bank</span>
+                            </div>
+                            <h4 class="fw-bold text-primary m-0" style="letter-spacing: 2px;">123-456-7890</h4>
+                            <small class="text-muted">a.n. Toko Yudis Sejahtera</small>
+                        </div>
+                        <p class="mt-3 small text-muted mb-0">
+                            *Setelah transfer, harap konfirmasi ke Admin via WhatsApp: <b>0812-3456-7890</b> 
+                            (Fitur upload bukti bayar akan segera hadir).
+                        </p>
+                    </div>
+
+                    <div class="text-center mt-5">
+                        <a href="/" class="btn btn-outline-secondary rounded-pill px-4 me-2">Kembali ke Home</a>
+                        <a href="https://wa.me/6281234567890" target="_blank" class="btn btn-success rounded-pill px-4">
+                            <i class="bi bi-whatsapp"></i> Konfirmasi ke Admin
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
