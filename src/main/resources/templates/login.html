@@ -1,125 +1,150 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Masuk - Inazuma Gate</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Login - Inazuma Realm</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     
     <style>
+        /* === BACKGROUND & ATMOSPHERE === */
         body {
-            font-family: 'Poppins', sans-serif;
-            /* Background Inazuma (Ungu Gelap) */
-            background: linear-gradient(135deg, #2d204a 0%, #483475 50%, #1e1535 100%);
-            height: 100vh;
+            font-family: 'Quicksand', sans-serif;
+            margin: 0; padding: 0; height: 100vh;
             display: flex; align-items: center; justify-content: center;
-            overflow: hidden;
+            
+            /* Gambar Background Raiden Shogun */
+            background: url('https://raw.githubusercontent.com/Yuuashura/assets/refs/heads/main/1362745.png') no-repeat center center fixed;
+            background-size: cover;
             position: relative;
         }
-        
-        /* Elemen Dekorasi Petir (Background) */
-        body::before {
-            content: ''; position: absolute; top: -10%; left: -10%; width: 50%; height: 50%;
-            background: radial-gradient(circle, rgba(162,155,254,0.1) 0%, rgba(0,0,0,0) 70%);
+
+        /* Lapisan Gelap (Overlay) agar form menonjol */
+        body::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 10, 30, 0.65); /* Hitam Ungu Transparan */
             z-index: 0;
         }
 
-        .card-glass {
-            background: rgba(45, 32, 74, 0.75); /* Ungu Transparan */
-            backdrop-filter: blur(15px); /* Efek Kaca */
-            border: 1px solid rgba(178, 166, 227, 0.2);
+        /* === KARTU LOGIN (GLASSMORPHISM) === */
+        .login-card {
+            position: relative; z-index: 1;
+            width: 100%; max-width: 400px;
+            padding: 40px 30px;
+            
+            /* Efek Kaca Bercahaya */
+            background: rgba(30, 20, 60, 0.6); 
+            backdrop-filter: blur(12px); /* Blur latar belakang */
+            border: 1px solid rgba(178, 166, 227, 0.3);
             border-radius: 20px;
-            box-shadow: 0 0 40px rgba(130, 87, 229, 0.2);
-            width: 100%; max-width: 420px;
-            z-index: 1; padding: 2rem; color: #fff;
+            
+            /* Efek Cahaya (Glow) */
+            box-shadow: 0 0 30px rgba(138, 43, 226, 0.4), 
+                        inset 0 0 20px rgba(138, 43, 226, 0.1);
+            
+            /* Animasi Melayang */
+            animation: floatCard 6s ease-in-out infinite;
         }
 
-        .inazuma-title {
-            font-family: 'Cinzel', serif; /* Font ala RPG */
-            color: #dcdde1;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(162, 155, 254, 0.5);
+        @keyframes floatCard {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
         }
 
-        .electro-icon {
-            font-size: 3rem; color: #a29bfe;
-            filter: drop-shadow(0 0 10px #6c5ce7);
-            margin-bottom: 10px;
+        /* === TYPOGRAPHY === */
+        .title {
+            font-family: 'Cinzel', serif;
+            color: #fff; text-align: center; font-size: 2rem;
+            text-shadow: 0 0 10px #a29bfe;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            text-align: center; color: #ccc; font-size: 0.9rem; margin-bottom: 30px;
         }
 
-        /* Input Field Gelap */
-        .form-control {
-            background: rgba(20, 15, 35, 0.6);
-            border: 1px solid #4b4b65;
-            color: #fff; padding: 12px; border-radius: 10px;
+        /* === INPUT FIELDS CUSTOM === */
+        .input-group-custom { position: relative; margin-bottom: 25px; }
+        
+        .input-field {
+            width: 100%; padding: 12px 15px; padding-left: 45px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px; color: #fff;
+            transition: 0.3s; outline: none;
         }
-        .form-control:focus {
-            background: rgba(20, 15, 35, 0.8);
+        
+        /* Icon di dalam input */
+        .input-icon {
+            position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
+            color: #a29bfe; font-size: 1.2rem;
+        }
+
+        /* Efek saat diketik (Fokus) */
+        .input-field:focus {
+            background: rgba(0, 0, 0, 0.6);
             border-color: #a29bfe;
-            box-shadow: 0 0 10px rgba(162, 155, 254, 0.3);
-            color: #fff;
+            box-shadow: 0 0 15px rgba(162, 155, 254, 0.5); /* Glow saat fokus */
         }
-        .form-control::placeholder { color: #888; }
 
-        /* Tombol Electro */
-        .btn-electro {
+        /* === TOMBOL GLOWING === */
+        .btn-glow {
+            width: 100%; padding: 12px;
             background: linear-gradient(90deg, #6c5ce7, #a29bfe);
-            border: none; color: white; font-weight: 600;
-            padding: 12px; border-radius: 50px; width: 100%;
+            border: none; border-radius: 50px;
+            color: white; font-weight: bold; letter-spacing: 1px;
+            text-transform: uppercase; cursor: pointer;
+            box-shadow: 0 5px 20px rgba(108, 92, 231, 0.4);
             transition: 0.3s;
-            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
         }
-        .btn-electro:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 20px rgba(108, 92, 231, 0.6);
-            color: #fff;
+        .btn-glow:hover {
+            transform: scale(1.05); /* Membesar sedikit */
+            box-shadow: 0 0 30px rgba(162, 155, 254, 0.8); /* Cahaya makin terang */
         }
 
-        .link-text { color: #a29bfe; text-decoration: none; font-weight: 600; transition: 0.3s; }
-        .link-text:hover { color: #fff; text-shadow: 0 0 8px #a29bfe; }
+        /* === LINK === */
+        .link-text { color: #a29bfe; text-decoration: none; font-weight: bold; transition: 0.3s; }
+        .link-text:hover { color: #fff; text-shadow: 0 0 5px #fff; }
+        
+        /* Alert Error Custom */
+        .alert-custom {
+            background: rgba(255, 71, 87, 0.2); border: 1px solid #ff4757;
+            color: #ffcccb; padding: 10px; border-radius: 10px; font-size: 0.85rem;
+            margin-bottom: 20px; text-align: center;
+        }
     </style>
 </head>
 <body>
 
-<div class="card-glass text-center">
-    <div class="electro-icon">
-        <i class="bi bi-lightning-charge-fill"></i>
-    </div>
-    
-    <h3 class="inazuma-title mb-1">Inazuma Gate</h3>
-    <p class="text-white-50 mb-4 small">Silakan masuk, Traveler.</p>
+<div class="login-card">
+    <h2 class="title">INAZUMA</h2>
+    <p class="subtitle">Gerbang Menuju Keabadian</p>
 
-    <div th:if="${param.error}" class="alert alert-danger bg-danger bg-opacity-25 border-danger text-light py-2 small">
-        <i class="bi bi-exclamation-circle me-1"></i> Username atau Password salah!
+    <div th:if="${param.error}" class="alert-custom">
+        <i class="bi bi-exclamation-triangle me-1"></i> Username atau Password salah!
     </div>
-    <div th:if="${param.logout}" class="alert alert-success bg-success bg-opacity-25 border-success text-light py-2 small">
+    <div th:if="${param.logout}" class="alert-custom" style="border-color: #2ed573; background: rgba(46, 213, 115, 0.2); color: #7bed9f;">
         <i class="bi bi-check-circle me-1"></i> Berhasil Logout.
     </div>
 
-    <form action="/login" method="post" class="text-start">
-        <div class="mb-3">
-            <label class="form-label small text-white-50 ms-1">Username</label>
-            <div class="input-group">
-                <span class="input-group-text bg-dark border-secondary text-secondary"><i class="bi bi-person"></i></span>
-                <input type="text" name="username" class="form-control" placeholder="Masukan Username" required>
-            </div>
-        </div>
-
-        <div class="mb-4">
-            <label class="form-label small text-white-50 ms-1">Password</label>
-            <div class="input-group">
-                <span class="input-group-text bg-dark border-secondary text-secondary"><i class="bi bi-key"></i></span>
-                <input type="password" name="password" class="form-control" placeholder="Masukan Password" required>
-            </div>
-        </div>
-
-        <button type="submit" class="btn btn-electro mb-3">MASUK</button>
+    <form action="/login" method="post">
         
-        <div class="text-center mt-3">
-            <small class="text-white-50">Belum punya izin akses? <a href="/daftar" class="link-text">Daftar Disini</a></small>
+        <div class="input-group-custom">
+            <i class="bi bi-person-fill input-icon"></i>
+            <input type="text" name="username" class="input-field" placeholder="Username Traveler" required autocomplete="off">
         </div>
+
+        <div class="input-group-custom">
+            <i class="bi bi-key-fill input-icon"></i>
+            <input type="password" name="password" class="input-field" placeholder="Sandi Rahasia" required>
+        </div>
+
+        <button type="submit" class="btn-glow">Masuk</button>
     </form>
+
+    <div class="text-center mt-4" style="font-size: 0.9rem; color: #ccc;">
+        Belum punya Vision? <a href="/daftar" class="link-text">Daftar Sekarang</a>
+    </div>
 </div>
 
 </body>
