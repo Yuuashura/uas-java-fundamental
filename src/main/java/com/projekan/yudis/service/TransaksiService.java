@@ -72,6 +72,8 @@ public class TransaksiService {
                 detail.setJumlah(cart.getJumlah());
                 detail.setHargaSatuan(produk.getHarga()); // Kunci harga saat beli
                 detail.setSubtotal(produk.getHarga() * cart.getJumlah());
+                detail.setNamaProductSnapshot(produk.getNamaProduct());
+detail.setGambarSnapshot(produk.getGambarProduct()); // Salin Base64 Strin
                 detailRepository.save(detail);
 
                 // Hitung Total
@@ -129,4 +131,6 @@ public class TransaksiService {
             transaksiRepository.save(t);
         }
     }
+
+    
 }

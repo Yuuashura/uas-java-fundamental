@@ -36,9 +36,9 @@ public class Transaksi {
     private String alamatPengiriman; // Alamat lengkap jalan/rt/rw
 
     // Bukti Transfer (Base64 Image)
-    @Lob
-    @Column(columnDefinition = "LONGTEXT")
-    private String buktiBayar;
+    // @Lob
+    // @Column(columnDefinition = "LONGTEXT")
+    // private String buktiBayar;
 
     @Enumerated(EnumType.STRING)
     private Status status;

@@ -1,17 +1,22 @@
 package com.projekan.yudis.controller;
 
+import com.projekan.yudis.model.Produk;
 import com.projekan.yudis.model.User;
 import com.projekan.yudis.service.KeranjangService;
 import com.projekan.yudis.service.ProdukService;
 import com.projekan.yudis.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class MainController {
@@ -25,82 +30,109 @@ public class MainController {
     @Autowired
     private KeranjangService keranjangService;
 
+    // ==========================================
+    // 1. HALAMAN UTAMA (INDEX) - Load Awal
+    // ==========================================
     @GetMapping("/")
     public String index(Model model,
-            @CookieValue(value = "USER_TOKEN", required = false) String token,
-            @RequestParam(value = "keyword", required = false) String keyword,
-            @RequestParam(value = "sortBy", required = false) String sortBy) {
+                        @CookieValue(value = "USER_TOKEN", required = false) String token,
+                        @RequestParam(value = "keyword", required = false) String keyword,
+                        @RequestParam(value = "kategori", required = false) String kategori, // <-- Parameter Kategori
+                        @RequestParam(value = "sortBy", required = false) String sortBy) {
 
         // A. Cek User Login
         User currentUser = userService.getUserFromToken(token);
         if (currentUser != null) {
             model.addAttribute("user", currentUser);
-
-            // 2. TAMBAHKAN INI (Hitung Keranjang)
             int totalItem = keranjangService.hitungTotalItem(currentUser);
             model.addAttribute("cartCount", totalItem);
         }
 
-        // B. Ambil Produk (Panggil method baru yang ada filternya)
-        model.addAttribute("listProduk", produkService.getProdukWithFilter(keyword, sortBy));
+        // B. Ambil Produk Halaman Pertama (Page 0, Size 20)
+        int pageSize = 20;
+        Page<Produk> pageProduk = produkService.getProdukPaged(keyword, kategori, sortBy, 0, pageSize);
 
-        // C. Balikin nilai filter ke HTML biar gak hilang setelah reload
+        // Kirim Data ke HTML
+        model.addAttribute("listProduk", pageProduk.getContent());
+        
+        // Kirim Parameter Filter Balik ke HTML (agar tidak hilang saat refresh/pindah halaman)
         model.addAttribute("keyword", keyword);
+        model.addAttribute("kategori", kategori);
         model.addAttribute("sortBy", sortBy);
+        
+        // Info untuk JavaScript (Infinite Scroll)
+        model.addAttribute("totalPages", pageProduk.getTotalPages());
 
         return "index";
     }
 
     // ==========================================
-    // 2. FITUR REGISTRASI
+    // 2. API LOAD MORE DATA (JSON)
+    // Dipanggil oleh JavaScript saat Scroll
     // ==========================================
+    @GetMapping("/api/products/load")
+    @ResponseBody // Return JSON
+    public List<Produk> loadMoreProduk(
+            @RequestParam(value = "page") int page,
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "kategori", required = false) String kategori, // <-- Parameter Kategori
+            @RequestParam(value = "sortBy", required = false) String sortBy) {
+
+        int pageSize = 20;
+        
+        // Ambil data halaman ke-X
+        Page<Produk> pageProduk = produkService.getProdukPaged(keyword, kategori, sortBy, page, pageSize);
+
+        // Jika data ada, kembalikan list-nya. Jika habis, kembalikan list kosong.
+        if (pageProduk.hasContent()) {
+            return pageProduk.getContent();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    // ==========================================
+    // 3. FITUR AUTH (LOGIN, REGISTER, LOGOUT)
+    // ==========================================
+
     @GetMapping("/daftar")
-    public String formDaftar(Model model) {
+    public String formDaftar(Model model, @CookieValue(value = "USER_TOKEN", required = false) String token) {
+        User currentUser = userService.getUserFromToken(token);
+        if (currentUser != null) return "redirect:/";
         model.addAttribute("user", new User());
         return "register";
     }
 
     @PostMapping("/daftar")
-    public String prosesDaftar(@Valid @ModelAttribute User user,
-            BindingResult bindingResult,
-            Model model) {
-
-        // 1. Cek apakah ada error validasi (Misal: Password kependekan)
-        if (bindingResult.hasErrors()) {
-            // Jika ada error, kembalikan ke halaman register biar user benerin
-            return "register";
-        }
-
-        // 2. Cek apakah Username sudah terpakai (Logika Bisnis)
+    public String prosesDaftar(@Valid @ModelAttribute User user, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) return "register";
+        
         boolean sukses = userService.register(user);
-
         if (!sukses) {
             model.addAttribute("error", "Username sudah terdaftar! Ganti yang lain.");
             return "register";
         }
-
         return "redirect:/login";
     }
 
-    // ==========================================
-    // 3. FITUR LOGIN
-    // ==========================================
     @GetMapping("/login")
-    public String formLogin() {
+    public String formLogin(@CookieValue(value = "USER_TOKEN", required = false) String token) {
+        User currentUser = userService.getUserFromToken(token);
+        if (currentUser != null) return "redirect:/";
         return "login";
     }
 
     @PostMapping("/login")
     public String prosesLogin(@RequestParam String username,
-            @RequestParam String password,
-            HttpServletResponse response,
-            Model model) {
+                              @RequestParam String password,
+                              HttpServletResponse response,
+                              Model model) {
 
         String token = userService.login(username, password);
 
         if (token != null) {
             Cookie cookie = new Cookie("USER_TOKEN", token);
-            cookie.setMaxAge(24 * 60 * 60);
+            cookie.setMaxAge(24 * 60 * 60); // 1 Hari
             cookie.setPath("/");
             cookie.setHttpOnly(true);
             response.addCookie(cookie);
@@ -117,12 +149,9 @@ public class MainController {
         }
     }
 
-    // ==========================================
-    // 4. FITUR LOGOUT
-    // ==========================================
     @GetMapping("/logout")
     public String logout(HttpServletResponse response,
-            @CookieValue(value = "USER_TOKEN", required = false) String token) {
+                         @CookieValue(value = "USER_TOKEN", required = false) String token) {
         userService.logout(token);
         Cookie cookie = new Cookie("USER_TOKEN", null);
         cookie.setMaxAge(0);
@@ -130,7 +159,11 @@ public class MainController {
         response.addCookie(cookie);
         return "redirect:/";
     }
-    // 5. HALAMAN EDIT PROFIL
+
+    // ==========================================
+    // 4. FITUR PROFIL USER
+    // ==========================================
+
     @GetMapping("/profil")
     public String halamanProfil(Model model,
                                 @CookieValue(value = "USER_TOKEN", required = false) String token) {
@@ -141,25 +174,22 @@ public class MainController {
         return "profil";
     }
 
-    // 6. PROSES UPDATE PROFIL
     @PostMapping("/profil/update")
     public String prosesUpdateProfil(@ModelAttribute User userForm,
                                      @RequestParam(required = false) String newPassword,
                                      @CookieValue(value = "USER_TOKEN", required = false) String token,
                                      Model model) {
-        
+
         User userLogin = userService.getUserFromToken(token);
         if (userLogin == null) return "redirect:/login";
 
-        // Panggil Service Update
         String hasil = userService.updateDataUser(userLogin, userForm, newPassword);
 
         if (hasil.equals("OK")) {
             return "redirect:/profil?sukses=Data Berhasil Diupdate";
         } else {
-            // Jika Gagal (misal username duplikat), balikin ke form dengan error
             model.addAttribute("error", hasil);
-            model.addAttribute("user", userLogin); // Balikin data lama biar gak kosong
+            model.addAttribute("user", userLogin);
             return "profil";
         }
     }

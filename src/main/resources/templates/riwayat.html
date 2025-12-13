@@ -1,129 +1,107 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Riwayat Belanja - Toko Yudis</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Riwayat Pembelian - Inazuma Market</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     
     <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; }
-        .navbar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        
-        /* Card Style */
-        .card-history { border: none; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.2s; }
-        .card-history:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
-        
-        /* Status Badge */
-        .status-pill { font-size: 0.75rem; padding: 6px 12px; border-radius: 50px; font-weight: 600; letter-spacing: 0.5px; }
-        
-        /* Thumbnail Gambar */
-        .history-img-container {
-            display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px;
-        }
-        .history-thumb {
-            width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid #eee; flex-shrink: 0;
-        }
-        /* Scrollbar Halus */
-        .history-img-container::-webkit-scrollbar { height: 4px; }
-        .history-img-container::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+        body { font-family: 'Quicksand', sans-serif; background-color: #1e1535; background-image: url('https://raw.githubusercontent.com/Yuuashura/assets/refs/heads/main/1362745.png'); background-attachment: fixed; background-size: cover; color: #fff; min-height: 100vh; }
+        body::after { content: ''; position: fixed; inset: 0; background: rgba(10, 5, 20, 0.85); z-index: -1; }
+        .navbar-glass { background: rgba(30, 20, 60, 0.85); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(162, 155, 254, 0.2); }
+        .brand-title { font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: 2px; color: #a29bfe; }
+        .glass-card { background: rgba(40, 30, 70, 0.7); border: 1px solid rgba(162, 155, 254, 0.2); border-radius: 15px; overflow: hidden; box-shadow: 0 5px 25px rgba(0,0,0,0.4); margin-bottom: 25px; transition: 0.3s; }
+        .glass-card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(162, 155, 254, 0.2); }
+        .list-group-item { background-color: transparent; color: #ccc; border-color: rgba(255, 255, 255, 0.1); }
+        .badge-status { min-width: 95px; padding: 6px 10px; border-radius: 50px; font-weight: 600; }
+        .bg-pending { background: rgba(255, 193, 7, 0.15); color: #ffca2c; border: 1px solid #ffc107; }
+        .bg-paid { background: rgba(13, 202, 240, 0.15); color: #0dcaf0; border: 1px solid #0dcaf0; }
+        .bg-sent { background: rgba(13, 110, 253, 0.15); color: #6ea8fe; border: 1px solid #0d6efd; }
+        .bg-done { background: rgba(32, 201, 151, 0.15); color: #20c997; border: 1px solid #20c997; }
+        .bg-cancel { background: rgba(220, 53, 69, 0.15); color: #ea868f; border: 1px solid #dc3545; }
+        .img-item { width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(162, 155, 254, 0.5); }
+        .price-total { color: #fdcb6e; font-family: 'Cinzel', serif; font-weight: 700; font-size: 1.2rem; }
     </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark p-3 shadow-sm mb-5">
+<nav class="navbar navbar-expand-lg navbar-dark navbar-glass p-3 sticky-top">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="/"><i class="bi bi-chevron-left me-2"></i>Kembali Belanja</a>
-        <span class="navbar-text text-white fw-bold">Riwayat Pesanan</span>
+        <a class="navbar-brand d-flex align-items-center" href="/">
+            <i class="bi bi-lightning-charge-fill me-2" style="color: #a29bfe;"></i>
+            <span class="brand-title">INAZUMA MARKET</span>
+        </a>
+        <div class="d-flex align-items-center">
+            <a href="/keranjang" class="text-white position-relative me-3 fs-5"><i class="bi bi-cart3"></i></a>
+            <div th:if="${user != null}" class="text-white fw-bold ps-3 border-start border-white border-opacity-25">
+                <span th:text="${user.namaLengkap}">User</span>
+            </div>
+            <div th:unless="${user != null}">
+                <a href="/login" class="btn btn-sm btn-outline-light rounded-pill px-3">Login</a>
+            </div>
+        </div>
     </div>
 </nav>
 
-<div class="container pb-5">
-    
-    <div th:if="${listTransaksi.empty}" class="text-center py-5">
-        <div class="mb-3 text-muted opacity-25">
-            <i class="bi bi-receipt-cutoff" style="font-size: 5rem;"></i>
-        </div>
-        <h4>Belum ada riwayat belanja.</h4>
-        <p class="text-muted">Yuk mulai checkout barang impianmu!</p>
-        <a href="/" class="btn btn-primary rounded-pill px-4 mt-2">Mulai Belanja</a>
+<div class="container py-5">
+    <h3 class="mb-5 text-center" style="font-family: 'Cinzel'; color: #fdcb6e;">Riwayat Dekrit Pembelian</h3>
+
+    <div th:if="${listTransaksi.isEmpty()}" class="text-center py-5">
+        <i class="bi bi-scroll display-1 text-white-50"></i>
+        <p class="mt-3 fs-5">Belum ada catatan Dekrit.</p>
+        <a href="/" class="btn btn-lg btn-outline-light mt-3">Mulai Berbelanja</a>
     </div>
 
-    <div th:unless="${listTransaksi.empty}" class="row justify-content-center">
-        <div class="col-lg-9">
-            
-            <div th:each="trx : ${listTransaksi}" class="card card-history mb-4 bg-white">
-                <div class="card-body p-4">
-                    <div class="row align-items-center">
-                        
-                        <div class="col-md-3 mb-3 mb-md-0 border-end-md">
-                            <div class="d-flex align-items-center mb-2">
-                                <i class="bi bi-bag-check-fill text-primary fs-4 me-3"></i>
-                                <div>
-                                    <small class="text-muted d-block">Tanggal</small>
-                                    <span class="fw-bold" th:text="${#temporals.format(trx.tanggalTransaksi, 'dd MMM yyyy')}">12 Des</span>
-                                </div>
-                            </div>
-                            <p class="m-0 small text-muted">ID: <span class="font-monospace text-dark" th:text="'#' + ${trx.idTransaksi}">#123</span></p>
-                        </div>
-
-                        <div class="col-md-4 mb-3 mb-md-0">
-                            <div class="history-img-container">
-                                <div th:each="detail : ${trx.details}" class="position-relative">
-                                    <img th:if="${detail.produk.gambarProduct != null}"
-                                         th:src="'data:image/jpeg;base64,' + ${detail.produk.gambarProduct}"
-                                         class="history-thumb" 
-                                         th:title="${detail.produk.namaProduct}">
-                                    
-                                    <span th:if="${detail.jumlah > 1}" 
-                                          th:text="${detail.jumlah}"
-                                          class="position-absolute bottom-0 end-0 badge bg-dark rounded-circle border border-white"
-                                          style="font-size: 0.6rem;">2</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-3 mb-3 mb-md-0 text-md-center">
-                            <span th:if="${trx.status.name() == 'PENDING'}" class="badge bg-warning text-dark status-pill">
-                                <i class="bi bi-clock"></i> MENUNGGU BAYAR
-                            </span>
-                            <span th:if="${trx.status.name() == 'PAID'}" class="badge bg-success status-pill">
-                                <i class="bi bi-box-seam"></i> DIKEMAS
-                            </span>
-                            <span th:if="${trx.status.name() == 'SENT'}" class="badge bg-info text-dark status-pill">
-                                <i class="bi bi-truck"></i> SEDANG DIKIRIM
-                            </span>
-                            <span th:if="${trx.status.name() == 'DONE'}" class="badge bg-primary status-pill">
-                                <i class="bi bi-star-fill text-warning me-1"></i> SELESAI
-                            </span>
-                            <span th:if="${trx.status.name() == 'CANCEL'}" class="badge bg-danger status-pill">
-                                <i class="bi bi-x-circle"></i> DIBATALKAN
-                            </span>
-                        </div>
-
-                        <div class="col-md-2 text-md-end">
-                            <span class="fw-bold text-primary d-block mb-2" th:text="'Rp ' + ${trx.grandTotal}">Rp 0</span>
-                            
-                            <a th:href="@{/transaksi/{id}(id=${trx.idTransaksi})}" class="btn btn-outline-secondary btn-sm rounded-pill w-100 mb-2">
-                                Detail
-                            </a>
-
-                            <a th:if="${trx.status.name() == 'SENT'}" 
-                               th:href="@{/transaksi/terima/{id}(id=${trx.idTransaksi})}" 
-                               class="btn btn-success btn-sm rounded-pill w-100 fw-bold shadow-sm"
-                               onclick="return confirm('Apakah barang sudah diterima dengan baik?')">
-                                Diterima
-                            </a>
-                        </div>
-
-                    </div>
-                </div>
+    <div th:each="trx : ${listTransaksi}" class="glass-card">
+        <div class="card-header p-3 d-flex justify-content-between align-items-center" 
+             style="background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <div>
+                <span class="fw-bold me-3" th:text="'ID Transaksi: #' + ${trx.idTransaksi}">#123</span>
+                <small class="text-white-50" th:text="${#temporals.format(trx.tanggalTransaksi, 'dd MMMM yyyy HH:mm')}">Tgl</small>
             </div>
-
+            <span th:classappend="'badge badge-status ' + (${trx.status.name() == 'PENDING'} ? 'bg-pending' : (${trx.status.name() == 'PAID'} ? 'bg-paid' : (${trx.status.name() == 'SENT'} ? 'bg-sent' : (${trx.status.name() == 'DONE'} ? 'bg-done' : 'bg-cancel'))))" th:text="${trx.status}">STATUS</span>
         </div>
+
+        <ul class="list-group list-group-flush p-3">
+            <li th:each="detail : ${trx.details}" class="list-group-item d-flex align-items-center py-2 px-3">
+                <div class="me-3">
+                    <img th:if="${detail.gambarSnapshot != null}" th:src="'data:image/jpeg;base64,' + ${detail.gambarSnapshot}" class="img-item">
+                    <img th:unless="${detail.gambarSnapshot != null}" th:if="${detail.produk != null}" th:src="'data:image/jpeg;base64,' + ${detail.produk.gambarProduct}" class="img-item">
+                    <div th:if="${detail.produk == null and detail.gambarSnapshot == null}" class="img-item bg-dark text-muted d-flex align-items-center justify-content-center" style="font-size: 0.7rem;">DELETED</div>
+                </div>
+                <div class="flex-grow-1">
+                    <div th:if="${detail.namaProductSnapshot != null}" class="fw-bold" th:text="${detail.namaProductSnapshot}">Nama</div>
+                    <div th:unless="${detail.namaProductSnapshot != null}" th:if="${detail.produk != null}" class="fw-bold" th:text="${detail.produk.namaProduct}">Nama</div>
+                    <div th:if="${detail.produk == null and detail.namaProductSnapshot == null}" class="fw-bold text-danger">Produk Dihapus</div>
+                    <small class="text-white-50" th:text="${detail.jumlah} + ' x Rp ' + ${detail.hargaSatuan}">Jml x Harga</small>
+                </div>
+                <div class="text-end fw-bold text-warning" th:with="subTotal=${detail.jumlah * detail.hargaSatuan}" th:text="'Rp ' + ${subTotal}">Rp 100.000</div>
+            </li>
+            
+            <li class="list-group-item d-flex justify-content-between py-3" style="background: rgba(0,0,0,0.3) !important;">
+                <strong style="font-family: 'Cinzel'; color: #fdcb6e;">Total Pembayaran:</strong>
+                <span class="price-total" th:text="'Rp ' + ${trx.grandTotal}">Rp 120.000</span>
+            </li>
+        </ul>
+
+        <div class="card-footer p-3 d-flex justify-content-end gap-2">
+            
+            <a th:href="@{/transaksi/{id}(id=${trx.idTransaksi})}" class="btn btn-sm btn-outline-light">
+                <i class="bi bi-file-earmark-text me-2"></i> Lihat Nota
+            </a>
+
+            <div th:if="${trx.status.name() == 'SENT'}">
+                <a th:href="@{/riwayat/terima/{id}(id=${trx.idTransaksi})}" 
+                   class="btn btn-sm btn-warning fw-bold text-dark"
+                   onclick="return confirm('Konfirmasi terima barang?')">
+                    <i class="bi bi-check-circle me-2"></i> Terima Pesanan
+                </a>
+            </div>
+        </div>
+        
     </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

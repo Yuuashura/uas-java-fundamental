@@ -4,6 +4,8 @@ import com.projekan.yudis.model.Produk;
 import com.projekan.yudis.model.User;
 import com.projekan.yudis.service.ProdukService;
 import com.projekan.yudis.service.UserService;
+import com.projekan.yudis.service.TransaksiService;
+import com.projekan.yudis.service.ProvinsiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +24,10 @@ public class AdminController {
     private UserService userService;
 
     @Autowired
-    private com.projekan.yudis.service.ProvinsiService provinsiService;
+    private TransaksiService transaksiService;
+
+    @Autowired
+    private ProvinsiService provinsiService;
 
     // METHOD BANTUAN: Cek apakah user adalah ADMIN
     private boolean isAdmin(String token) {
@@ -30,25 +35,30 @@ public class AdminController {
         return user != null && user.getRole() == User.Role.ADMIN;
     }
 
-  @GetMapping("/produk")
+    // =========================================================
+    // 1. MANAJEMEN PRODUK (DENGAN FILTER KATEGORI)
+    // =========================================================
+    @GetMapping("/produk")
     public String listProduk(Model model, 
                              @CookieValue(value = "USER_TOKEN", required = false) String token,
                              @RequestParam(value = "keyword", required = false) String keyword,
+                             @RequestParam(value = "kategori", required = false) String kategori, // <--- TAMBAHAN: Filter Kategori
                              @RequestParam(value = "sortBy", required = false) String sortBy,
-                             @RequestParam(value = "page", defaultValue = "0") int page) { // <--- PARAMETER BARU (Default hal 0)
+                             @RequestParam(value = "page", defaultValue = "0") int page) {
         
         if (!isAdmin(token)) return "redirect:/login";
 
-        int pageSize = 12; // Tampilkan 12 produk per halaman
+        int pageSize = 10; // Tampilkan 10 produk per halaman di Admin Panel
 
-        // Panggil Service Pagination
-        Page<Produk> pageProduk = produkService.getProdukPaged(keyword, sortBy, page, pageSize);
+        // Panggil Service Pagination (Sekarang mendukung Filter Kategori)
+        Page<Produk> pageProduk = produkService.getProdukPaged(keyword, kategori, sortBy, page, pageSize);
 
-        model.addAttribute("listProduk", pageProduk); // Kirim Page object
+        model.addAttribute("listProduk", pageProduk); // Kirim Page object untuk navigasi (next/prev)
         model.addAttribute("user", userService.getUserFromToken(token));
         
-        // Balikin param biar navigasi tetap jalan
+        // Balikin param biar filter tidak hilang saat klik halaman 2, 3, dst
         model.addAttribute("keyword", keyword);
+        model.addAttribute("kategori", kategori); // <--- Kirim balik kategori
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", pageProduk.getTotalPages());
@@ -60,8 +70,7 @@ public class AdminController {
     @GetMapping("/produk/tambah")
     public String formTambah(Model model,
             @CookieValue(value = "USER_TOKEN", required = false) String token) {
-        if (!isAdmin(token))
-            return "redirect:/login";
+        if (!isAdmin(token)) return "redirect:/login";
 
         model.addAttribute("produk", new Produk());
         return "admin/form_produk";
@@ -72,8 +81,7 @@ public class AdminController {
     public String simpanProduk(@ModelAttribute Produk produk,
             @RequestParam("fileGambar") MultipartFile file,
             @CookieValue(value = "USER_TOKEN", required = false) String token) {
-        if (!isAdmin(token))
-            return "redirect:/login";
+        if (!isAdmin(token)) return "redirect:/login";
 
         produkService.saveProduk(produk, file);
         return "redirect:/admin/produk";
@@ -83,44 +91,56 @@ public class AdminController {
     @GetMapping("/produk/hapus/{id}")
     public String hapusProduk(@PathVariable Integer id,
             @CookieValue(value = "USER_TOKEN", required = false) String token) {
-        if (!isAdmin(token))
-            return "redirect:/login";
+        if (!isAdmin(token)) return "redirect:/login";
 
         produkService.deleteProduk(id);
         return "redirect:/admin/produk";
     }
 
-    // Jangan lupa @Autowired TransaksiService di atas (biasanya sudah ada di
-    // TransaksiController, tapi ini AdminController)
-    @Autowired
-    private com.projekan.yudis.service.TransaksiService transaksiService;
+    // 5. TAMPILKAN FORM EDIT
+    @GetMapping("/produk/edit/{id}")
+    public String formEdit(@PathVariable Integer id, Model model,
+            @CookieValue(value = "USER_TOKEN", required = false) String token) {
+        if (!isAdmin(token)) return "redirect:/login";
 
-    // 5. HALAMAN KELOLA TRANSAKSI
+        Produk produk = produkService.getProdukById(id);
+        model.addAttribute("produk", produk);
+        return "admin/form_produk"; // Kita pakai ulang form yang sama
+    }
+
+    // 6. PROSES UPDATE
+    @PostMapping("/produk/update")
+    public String prosesUpdate(@ModelAttribute Produk produk,
+            @RequestParam("fileGambar") MultipartFile file,
+            @CookieValue(value = "USER_TOKEN", required = false) String token) {
+        if (!isAdmin(token)) return "redirect:/login";
+
+        produkService.updateProduk(produk, file);
+        return "redirect:/admin/produk";
+    }
+
+    // =========================================================
+    // 2. MANAJEMEN TRANSAKSI
+    // =========================================================
     @GetMapping("/transaksi")
     public String listTransaksi(Model model,
             @CookieValue(value = "USER_TOKEN", required = false) String token) {
-        if (!isAdmin(token))
-            return "redirect:/login";
+        if (!isAdmin(token)) return "redirect:/login";
 
         model.addAttribute("listTransaksi", transaksiService.getAllTransaksi());
         model.addAttribute("user", userService.getUserFromToken(token));
 
-        return "admin/list_transaksi"; // File HTML baru
+        return "admin/list_transaksi";
     }
 
-    // 6. PROSES UBAH STATUS
     @GetMapping("/transaksi/status/{id}")
     public String ubahStatus(@PathVariable Integer id,
             @RequestParam String status, // PAID, SENT, CANCEL
             @CookieValue(value = "USER_TOKEN", required = false) String token) {
-        if (!isAdmin(token))
-            return "redirect:/login";
+        if (!isAdmin(token)) return "redirect:/login";
 
-        // Konversi String ke Enum
         try {
-            com.projekan.yudis.model.Transaksi.Status statEnum = com.projekan.yudis.model.Transaksi.Status
-                    .valueOf(status);
-
+            com.projekan.yudis.model.Transaksi.Status statEnum = com.projekan.yudis.model.Transaksi.Status.valueOf(status);
             transaksiService.updateStatus(id, statEnum);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
@@ -129,33 +149,9 @@ public class AdminController {
         return "redirect:/admin/transaksi";
     }
 
-    // 7. TAMPILKAN FORM EDIT
-    @GetMapping("/produk/edit/{id}")
-    public String formEdit(@PathVariable Integer id, Model model,
-            @CookieValue(value = "USER_TOKEN", required = false) String token) {
-        // Cek Admin (Wajib)
-        // ... (asumsi logika isAdmin ada di method helper atau copy dari atas) ...
-
-        Produk produk = produkService.getProdukById(id);
-        model.addAttribute("produk", produk);
-        return "admin/form_produk"; // Kita pakai ulang form yang sama
-    }
-
-    // 8. PROSES UPDATE
-    @PostMapping("/produk/update")
-    public String prosesUpdate(@ModelAttribute Produk produk,
-            @RequestParam("fileGambar") MultipartFile file,
-            @CookieValue(value = "USER_TOKEN", required = false) String token) {
-        // Cek Admin...
-
-        produkService.updateProduk(produk, file);
-        return "redirect:/admin/produk";
-    }
-
-    // ... autowired userService, provinsiService ...
-
-    // ================= MANAJEMEN USER =================
-
+    // =========================================================
+    // 3. MANAJEMEN USER
+    // =========================================================
     @GetMapping("/users")
     public String listUsers(Model model, @CookieValue(value = "USER_TOKEN", required = false) String token) {
         if (!isAdmin(token)) return "redirect:/login";
@@ -185,8 +181,9 @@ public class AdminController {
         return "redirect:/admin/users";
     }
 
-    // ================= MANAJEMEN PROVINSI =================
-
+    // =========================================================
+    // 4. MANAJEMEN PROVINSI (ONGKIR)
+    // =========================================================
     @GetMapping("/provinsi")
     public String listProvinsi(Model model, @CookieValue(value = "USER_TOKEN", required = false) String token) {
         if (!isAdmin(token)) return "redirect:/login";

@@ -28,7 +28,9 @@ public class TransaksiController {
     @Autowired
     private TransaksiService transaksiService;
 
-    
+    @Autowired
+    private TransaksiDetailRepository transaksiDetailRepository;
+
 
     // 1. HALAMAN FORM CHECKOUT
     // Menerima list ID Keranjang dari checkbox
@@ -70,34 +72,45 @@ public class TransaksiController {
         return "redirect:/transaksi/" + transaksi.getIdTransaksi();
     }
 
- // Import repository detail
-    @Autowired
-    private TransaksiDetailRepository transaksiDetailRepository; // <-- Tambahkan ini di atas
 
-    // ...
-
+  // 3. HALAMAN DETAIL TRANSAKSI (Nota)
     @GetMapping("/transaksi/{id}")
     public String detailTransaksi(@PathVariable Integer id, Model model,
                                   @CookieValue(value = "USER_TOKEN", required = false) String token) {
         
         User user = userService.getUserFromToken(token);
-        Transaksi transaksi = transaksiService.getTransaksiById(id);
+        if (user == null) return "redirect:/login"; // Cek login dasar
 
-        // Validasi: Hanya pemilik transaksi yang boleh lihat
-        if (transaksi == null || !transaksi.getUser().getIdUser().equals(user.getIdUser())) {
-            return "redirect:/";
+        Transaksi transaksi = transaksiService.getTransaksiById(id);
+        if (transaksi == null) return "redirect:/";
+
+        // VALIDASI AKSES & LOGIKA TOMBOL KEMBALI
+        String backUrl = "/riwayat"; // Default untuk User
+        
+        if (user.getRole() == User.Role.ADMIN) {
+            // Jika ADMIN: Boleh lihat punya siapa saja & kembali ke dashboard admin
+            backUrl = "/admin/transaksi";
+        } else {
+            // Jika USER BIASA: Hanya boleh lihat punya sendiri
+            if (!transaksi.getUser().getIdUser().equals(user.getIdUser())) {
+                return "redirect:/"; // Tendang jika coba intip punya orang
+            }
         }
 
-        // === TAMBAHAN BARU: AMBIL LIST DETAIL BARANG ===
+        // Kirim backUrl ke HTML
+        model.addAttribute("backUrl", backUrl);
+
+        // Ambil Detail Barang
         List<TransaksiDetail> details = transaksiDetailRepository.findByTransaksi(transaksi);
         model.addAttribute("detailTransaksi", details);
-        // ===============================================
 
         model.addAttribute("transaksi", transaksi);
         model.addAttribute("user", user);
+        
         return "detail-transaksi";
     }
 
+    // 4. HALAMAN RIWAYAT BELANJA
     @GetMapping("/riwayat")
     public String riwayatBelanja(Model model, 
                                  @CookieValue(value = "USER_TOKEN", required = false) String token) {
@@ -116,13 +129,16 @@ public class TransaksiController {
         
         return "riwayat"; // Mengarah ke file riwayat.html
     }
-    // 5. PROSES KONFIRMASI DITERIMA
-    @GetMapping("/transaksi/terima/{id}")
+    
+    // 5. PROSES KONFIRMASI DITERIMA (SINKRONISASI URL)
+    // KOREKSI UTAMA: URL diubah dari /transaksi/terima/{id} menjadi /riwayat/terima/{id}
+    @GetMapping("/riwayat/terima/{id}")
     public String terimaPesanan(@PathVariable Integer id,
-                                @CookieValue(value = "USER_TOKEN", required = false) String token) {
+                                 @CookieValue(value = "USER_TOKEN", required = false) String token) {
         User user = userService.getUserFromToken(token);
         if (user != null) {
-            transaksiService.selesaikanPesanan(user, id);
+            // Panggil service yang melakukan validasi kepemilikan
+            transaksiService.selesaikanPesanan(user, id); 
         }
         return "redirect:/riwayat";
     }

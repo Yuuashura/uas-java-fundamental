@@ -27,6 +27,12 @@
         .form-control:focus, .form-select:focus {
             background: rgba(0, 0, 0, 0.7); border-color: #a29bfe; color: #fff; box-shadow: 0 0 15px rgba(162, 155, 254, 0.3);
         }
+        /* Style opsi dropdown biar kelihatan jelas di background gelap */
+        .form-select option {
+            background-color: #1e1535;
+            color: #fff;
+        }
+
         .title { font-family: 'Cinzel', serif; color: #fdcb6e; text-align: center; margin-bottom: 1.5rem; }
     </style>
 </head>
@@ -49,10 +55,19 @@
                 <label class="form-label">Kategori</label>
                 <select th:field="*{kategoriProduct}" class="form-select">
                     <option value="" disabled selected>-- Pilih Jenis --</option>
+                    
+                    <option value="Senjata">Senjata (Weapons)</option>
+                    <option value="Makanan">Makanan (Food)</option>
+                    <option value="Material">Material & Flora</option>
+                    <option value="Aksesoris">Aksesoris & Artefak</option>
+                    <option value="Merchandise">Merchandise & Pajangan</option>
+                    <option value="Buku">Buku & Novel</option>
+                    <option value="Gadget">Gadget & Alat</option>
+                    <option value="Lainnya">Lainnya</option>
+                    
                     <option value="Cosplay">Cosplay & Wig</option>
                     <option value="Apparel">Apparel (Baju)</option>
                     <option value="Figure">Figure & Pajangan</option>
-                    <option value="Aksesoris">Aksesoris (Vision)</option>
                     <option value="Boneka">Boneka & Plushie</option>
                 </select>
             </div>

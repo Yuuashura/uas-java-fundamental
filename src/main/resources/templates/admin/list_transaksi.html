@@ -20,7 +20,6 @@
         tbody tr { opacity: 0; animation: slideIn 0.5s ease-out forwards; transition: 0.2s; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         tbody tr:nth-child(1) { animation-delay: 0.1s; } tbody tr:nth-child(2) { animation-delay: 0.15s; } tbody tr:nth-child(3) { animation-delay: 0.2s; } 
-        tbody tr:nth-child(4) { animation-delay: 0.25s; } tbody tr:nth-child(5) { animation-delay: 0.3s; }
         
         .table { --bs-table-bg: transparent; --bs-table-color: #eee; border-color: rgba(255,255,255,0.1); }
         .table-hover tbody tr:hover { background-color: rgba(162, 155, 254, 0.25) !important; transform: scale(1.01); z-index: 10; position: relative; }
@@ -63,7 +62,15 @@
                                 <td class="ps-4 text-white-50 fw-bold" th:text="'#' + ${trx.idTransaksi}">#1</td>
                                 <td>
                                     <div class="d-flex gap-1">
-                                        <div th:each="detail : ${trx.details}"><img th:if="${detail.produk.gambarProduct != null}" th:src="'data:image/jpeg;base64,' + ${detail.produk.gambarProduct}" class="admin-thumb"></div>
+                                        <div th:each="detail : ${trx.details}">
+                                            <img th:if="${detail.gambarSnapshot != null}"
+                                                 th:src="'data:image/jpeg;base64,' + ${detail.gambarSnapshot}"
+                                                 class="admin-thumb" th:title="${detail.namaProductSnapshot}">
+                                            <img th:unless="${detail.gambarSnapshot != null}"
+                                                 th:if="${detail.produk != null}"
+                                                 th:src="'data:image/jpeg;base64,' + ${detail.produk.gambarProduct}"
+                                                 class="admin-thumb" th:title="${detail.produk.namaProduct}">
+                                        </div>
                                     </div>
                                 </td>
                                 <td><div class="fw-bold text-light" th:text="${trx.user.namaLengkap}">Nama</div></td>
@@ -71,12 +78,20 @@
                                 <td class="fw-bold text-warning" th:text="'Rp ' + ${trx.grandTotal}">Rp 0</td>
                                 <td><span th:classappend="'badge badge-status ' + (${trx.status.name() == 'PENDING'} ? 'bg-pending' : (${trx.status.name() == 'PAID'} ? 'bg-paid' : (${trx.status.name() == 'SENT'} ? 'bg-sent' : (${trx.status.name() == 'DONE'} ? 'bg-done' : 'bg-cancel'))))" th:text="${trx.status}">STATUS</span></td>
                                 <td class="text-end pe-4">
-                                    <div th:if="${trx.status.name() == 'PENDING'}">
+                                    
+                                    <a th:href="@{/transaksi/{id}(id=${trx.idTransaksi})}" 
+                                       class="btn btn-sm btn-info text-white me-1" title="Lihat Nota">
+                                        <i class="bi bi-eye-fill"></i>
+                                    </a>
+
+                                    <div th:if="${trx.status.name() == 'PENDING'}" class="d-inline">
                                         <a th:href="@{/admin/transaksi/status/{id}?status=PAID(id=${trx.idTransaksi})}" class="btn btn-sm btn-outline-success me-1"><i class="bi bi-check-lg"></i></a>
                                         <a th:href="@{/admin/transaksi/status/{id}?status=CANCEL(id=${trx.idTransaksi})}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Batalkan?')"><i class="bi bi-x-lg"></i></a>
                                     </div>
-                                    <div th:if="${trx.status.name() == 'PAID'}"><a th:href="@{/admin/transaksi/status/{id}?status=SENT(id=${trx.idTransaksi})}" class="btn btn-sm btn-primary fw-bold px-3">KIRIM</a></div>
-                                    <span th:if="${trx.status.name() == 'DONE'}" class="text-success small"><i class="bi bi-check-all"></i></span>
+                                    <div th:if="${trx.status.name() == 'PAID'}" class="d-inline">
+                                        <a th:href="@{/admin/transaksi/status/{id}?status=SENT(id=${trx.idTransaksi})}" class="btn btn-sm btn-primary fw-bold px-3">KIRIM</a>
+                                    </div>
+                                    <span th:if="${trx.status.name() == 'DONE'}" class="text-success small ms-1"><i class="bi bi-check-all"></i></span>
                                 </td>
                             </tr>
                         </tbody>

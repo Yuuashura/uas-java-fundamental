@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title th:text="${produk.namaProduct} + ' - Inazuma Market'">Detail Produk</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/bootstrap-icons.css}">
+
     <style>
         /* === ATMOSPHERE === */
         body {
@@ -22,32 +25,26 @@
 
         /* === NAVBAR KACA === */
         .navbar-glass {
-            background: rgba(30, 20, 60, 0.85);
-            backdrop-filter: blur(10px);
+            background: rgba(30, 20, 60, 0.85); backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(162, 155, 254, 0.2);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
-        .brand-title {
-            font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: 2px;
-            color: #a29bfe; text-shadow: 0 0 10px rgba(162, 155, 254, 0.3);
-        }
+        .brand-title { font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: 2px; color: #a29bfe; text-shadow: 0 0 10px rgba(162, 155, 254, 0.3); }
 
         /* === BREADCRUMB === */
         .breadcrumb-item a { color: #a29bfe; text-decoration: none; font-weight: 600; }
         .breadcrumb-item.active { color: #ccc; }
-        .breadcrumb-item + .breadcrumb-item::before { color: #555; }
+        .breadcrumb-item+.breadcrumb-item::before { color: #555; }
 
-        /* === PRODUCT CONTAINER (GLASS) === */
+        /* === PRODUCT CONTAINER === */
         .glass-product {
             background: rgba(40, 30, 70, 0.6);
             border: 1px solid rgba(162, 155, 254, 0.2);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            border-radius: 20px; padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(5px);
         }
 
-        /* IMAGE AREA */
         .product-image-container {
             background: rgba(0, 0, 0, 0.3);
             border-radius: 15px; padding: 20px; text-align: center;
@@ -55,210 +52,160 @@
         }
         .main-img {
             max-width: 100%; max-height: 400px; object-fit: contain;
-            filter: drop-shadow(0 0 15px rgba(162, 155, 254, 0.3)); /* Glow di gambar */
-            transition: transform 0.3s;
+            filter: drop-shadow(0 0 15px rgba(162, 155, 254, 0.3)); transition: transform 0.3s;
         }
         .main-img:hover { transform: scale(1.02); }
 
         /* TYPOGRAPHY */
         .category-badge {
-            background: rgba(162, 155, 254, 0.1); border: 1px solid #a29bfe;
-            color: #a29bfe; font-size: 0.8rem; padding: 5px 12px;
-            border-radius: 50px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
+            background: rgba(162, 155, 254, 0.1); border: 1px solid #a29bfe; color: #a29bfe;
+            font-size: 0.8rem; padding: 5px 12px; border-radius: 50px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
         }
-        
         .product-title {
-            font-family: 'Cinzel', serif; font-weight: 700; color: #fff;
-            font-size: 2rem; text-shadow: 0 0 20px rgba(162, 155, 254, 0.5);
+            font-family: 'Cinzel', serif; font-weight: 700; color: #fff; font-size: 2rem; text-shadow: 0 0 20px rgba(162, 155, 254, 0.5);
         }
-        
         .product-price {
-            color: #fdcb6e; /* Emas */
-            font-family: 'Cinzel', serif; font-weight: 700; font-size: 1.8rem;
-            text-shadow: 0 0 10px rgba(253, 203, 110, 0.4);
+            color: #fdcb6e; font-family: 'Cinzel', serif; font-weight: 700; font-size: 1.8rem; text-shadow: 0 0 10px rgba(253, 203, 110, 0.4);
         }
 
-        /* TOMBOL & INPUT */
+        /* INPUTS */
+        input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+
         .qty-container {
-            display: flex; align-items: center;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            width: fit-content;
-            border-radius: 50px; padding: 5px; background: rgba(0,0,0,0.3);
+            display: inline-flex; align-items: center; justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 50px; padding: 4px; background: rgba(0, 0, 0, 0.3); width: fit-content;
         }
         .btn-qty {
-            width: 35px; height: 35px; border-radius: 50%; border: none;
-            background: rgba(255, 255, 255, 0.1); color: #fff;
-            font-weight: bold; transition: 0.2s;
+            width: 32px; height: 32px; border-radius: 50%; border: none;
+            background: rgba(255, 255, 255, 0.1); color: #fff; font-weight: bold; transition: 0.2s; display: flex; align-items: center; justify-content: center;
         }
         .btn-qty:hover { background: #a29bfe; color: #000; box-shadow: 0 0 10px #a29bfe; }
-        
         .input-qty {
-            border: none; text-align: center; width: 60px;
-            font-weight: bold; font-size: 1.1rem; background: transparent; color: #fff;
+            border: none; text-align: center; width: 50px; font-weight: bold; font-size: 1.1rem; background: transparent; color: #fff; padding: 0; margin: 0 5px;
         }
         .input-qty:focus { outline: none; }
-        
-        /* Tombol Add to Cart (Emas Gradient) */
+
         .btn-gold {
             background: linear-gradient(135deg, #fdcb6e, #e17055);
             border: none; color: #2d3436; font-weight: bold;
-            border-radius: 50px; width: 100%; padding: 12px;
-            transition: 0.3s; font-family: 'Quicksand', sans-serif; text-transform: uppercase; letter-spacing: 1px;
+            border-radius: 50px; width: 100%; padding: 12px; transition: 0.3s;
+            font-family: 'Quicksand', sans-serif; text-transform: uppercase; letter-spacing: 1px;
         }
-        .btn-gold:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 25px rgba(253, 203, 110, 0.6);
-            color: #000;
-        }
+        .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 0 25px rgba(253, 203, 110, 0.6); color: #000; }
         
-        /* Disabled Button */
         .btn-disabled {
             background: rgba(255, 255, 255, 0.1); color: #777; border: 1px solid #555;
             cursor: not-allowed; width: 100%; padding: 12px; border-radius: 50px;
         }
-
-        /* Description Text */
         .desc-text { color: #d1d8e0; line-height: 1.8; font-size: 0.95rem; }
     </style>
 </head>
+
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark navbar-glass p-3 sticky-top">
-    <div class="container">
-        <a class="navbar-brand d-flex align-items-center" href="/">
-            <i class="bi bi-lightning-charge-fill me-2" style="color: #a29bfe;"></i>
-            <span class="brand-title">INAZUMA MARKET</span>
-        </a>
-        <div class="d-flex align-items-center">
-            <a href="/keranjang" class="text-white position-relative me-3 fs-5"><i class="bi bi-cart3"></i></a>
-            <div th:if="${user != null}" class="text-white fw-bold ps-3 border-start border-white border-opacity-25">
-                <span th:text="${user.namaLengkap}">User</span>
-            </div>
-            <div th:unless="${user != null}">
-                <a href="/login" class="btn btn-sm btn-outline-light rounded-pill px-3">Login</a>
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-glass p-3 sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <i class="bi bi-lightning-charge-fill me-2" style="color: #a29bfe;"></i>
+                <span class="brand-title">INAZUMA MARKET</span>
+            </a>
+            <div class="d-flex align-items-center">
+                <a href="/keranjang" class="text-white position-relative me-3 fs-5"><i class="bi bi-cart3"></i></a>
+                <div th:if="${user != null}" class="text-white fw-bold ps-3 border-start border-white border-opacity-25">
+                    <span th:text="${user.namaLengkap}">User</span>
+                </div>
+                <div th:unless="${user != null}">
+                    <a href="/login" class="btn btn-sm btn-outline-light rounded-pill px-3">Login</a>
+                </div>
             </div>
         </div>
-    </div>
-</nav>
-
-<div class="container mt-5 mb-5">
-    
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/"><i class="bi bi-house-door-fill"></i> Home</a></li>
-            <li class="breadcrumb-item"><a href="#">Produk</a></li>
-            <li class="breadcrumb-item active" aria-current="page" th:text="${produk.namaProduct}">Nama</li>
-        </ol>
     </nav>
 
-    <div class="glass-product">
-        <div class="row gx-5">
-            <div class="col-md-5 mb-4 mb-md-0">
-                <div class="product-image-container">
-                    <img th:if="${produk.gambarProduct != null}" 
-                         th:src="'data:image/jpeg;base64,' + ${produk.gambarProduct}" 
-                         class="main-img" alt="Produk">
-                    <div th:unless="${produk.gambarProduct != null}" class="py-5 text-white-50">
-                        <i class="bi bi-image display-1 opacity-25"></i> <p>Gambar tidak tersedia</p>
+    <div class="container mt-5 mb-5">
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/"><i class="bi bi-house-door-fill"></i> Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Produk</a></li>
+                <li class="breadcrumb-item active" aria-current="page" th:text="${produk.namaProduct}">Nama</li>
+            </ol>
+        </nav>
+
+        <div class="glass-product">
+            <div class="row gx-5">
+                <div class="col-md-5 mb-4 mb-md-0">
+                    <div class="product-image-container">
+                        <img th:if="${produk.gambarProduct != null}"
+                            th:src="'data:image/jpeg;base64,' + ${produk.gambarProduct}" class="main-img" alt="Produk">
+                        <div th:unless="${produk.gambarProduct != null}" class="py-5 text-white-50">
+                            <i class="bi bi-image display-1 opacity-25"></i>
+                            <p>Gambar tidak tersedia</p>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-md-7">
-                <div class="ps-md-3">
-                    <span class="category-badge mb-3 d-inline-block" th:text="${produk.kategoriProduct}">Kategori</span>
-                    
-                    <h1 class="product-title mb-2" th:text="${produk.namaProduct}">Mistsplitter Reforged</h1>
-                    
-                    <div class="d-flex align-items-center mb-4 border-bottom border-light border-opacity-10 pb-4">
-                        <h2 class="product-price m-0 me-3" th:text="'Rp ' + ${produk.harga}">Rp 25.000.000</h2>
-                        
-                        <span th:if="${produk.stock > 5}" class="badge bg-success bg-opacity-25 text-success border border-success rounded-pill px-3">
-                            <i class="bi bi-check-circle-fill me-1"></i> Tersedia (<span th:text="${produk.stock}">10</span>)
-                        </span>
-                        <span th:if="${produk.stock > 0 and produk.stock <= 5}" class="badge bg-warning bg-opacity-25 text-warning border border-warning rounded-pill px-3">
-                            <i class="bi bi-exclamation-circle-fill me-1"></i> Menipis (<span th:text="${produk.stock}">3</span>)
-                        </span>
-                        <span th:if="${produk.stock == 0}" class="badge bg-danger bg-opacity-25 text-danger border border-danger rounded-pill px-3">
-                            <i class="bi bi-x-circle-fill me-1"></i> Habis
-                        </span>
-                    </div>
+                <div class="col-md-7">
+                    <div class="ps-md-3">
+                        <span class="category-badge mb-3 d-inline-block" th:text="${produk.kategoriProduct}">Kategori</span>
+                        <h1 class="product-title mb-2" th:text="${produk.namaProduct}">Nama Produk</h1>
 
-                    <div class="mb-4">
-                        <h6 class="fw-bold" style="color: #a29bfe;">Deskripsi Item</h6>
-                        <p class="desc-text" th:text="${produk.deskripsiProduct}">Deskripsi...</p>
-                    </div>
+                        <div class="d-flex align-items-center mb-4 border-bottom border-light border-opacity-10 pb-4">
+                            <h2 class="product-price m-0 me-3" th:text="'Rp ' + ${produk.harga}">Rp 0</h2>
+                            <span th:if="${produk.stock > 5}" class="badge bg-success bg-opacity-25 text-success border border-success rounded-pill px-3">
+                                <i class="bi bi-check-circle-fill me-1"></i> Tersedia (<span th:text="${produk.stock}">10</span>)
+                            </span>
+                            <span th:if="${produk.stock > 0 and produk.stock <= 5}" class="badge bg-warning bg-opacity-25 text-warning border border-warning rounded-pill px-3">
+                                <i class="bi bi-exclamation-circle-fill me-1"></i> Menipis (<span th:text="${produk.stock}">3</span>)
+                            </span>
+                            <span th:if="${produk.stock == 0}" class="badge bg-danger bg-opacity-25 text-danger border border-danger rounded-pill px-3">
+                                <i class="bi bi-x-circle-fill me-1"></i> Habis
+                            </span>
+                        </div>
 
-                    <form action="/keranjang/tambah" method="post" th:if="${produk.stock > 0}">
-                        <input type="hidden" name="idProduct" th:value="${produk.idProduct}">
-                        
-                        <div class="row align-items-end">
-                            <div class="col-md-4 mb-3 mb-md-0">
-                                <label class="form-label small text-white-50 fw-bold">Jumlah</label>
-                                <div class="qty-container">
-                                    <button type="button" class="btn-qty" onclick="ubahQty(-1)"><i class="bi bi-dash"></i></button>
-                                    
-                                    <input type="number" name="jumlah" id="inputJumlah" 
-                                           value="1" min="1" th:max="${produk.stock}" 
-                                           class="input-qty" onchange="validasiManual()">
-                                    
-                                    <button type="button" class="btn-qty" onclick="ubahQty(1)"><i class="bi bi-plus"></i></button>
+                        <div class="mb-4">
+                            <h6 class="fw-bold" style="color: #a29bfe;">Deskripsi Item</h6>
+                            <p class="desc-text" th:text="${produk.deskripsiProduct}">Deskripsi...</p>
+                        </div>
+
+                        <form action="/keranjang/tambah" method="post" th:if="${produk.stock > 0}" onsubmit="return validateStock();">
+                            <input type="hidden" name="idProduct" th:value="${produk.idProduct}">
+
+                            <div class="row align-items-end">
+                                <div class="col-md-4 mb-3 mb-md-0">
+                                    <label class="form-label small text-white-50 fw-bold">Jumlah</label>
+                                    <div class="qty-container">
+                                        <button type="button" class="btn-qty" onclick="ubahQty(-1)"><i class="bi bi-dash"></i></button>
+                                        
+                                        <input type="number" name="jumlah" id="inputJumlah" 
+                                               value="1" min="1" 
+                                               th:max="${produk.stock}" 
+                                               th:data-max-stock="${produk.stock}" 
+                                               class="input-qty" onchange="validasiManual()">
+
+                                        <button type="button" class="btn-qty" onclick="ubahQty(1)"><i class="bi bi-plus"></i></button>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-8">
+                                    <button type="submit" class="btn-gold shadow">
+                                        <i class="bi bi-bag-plus-fill me-2"></i> Masukkan Tas
+                                    </button>
                                 </div>
                             </div>
+                        </form>
 
-                            <div class="col-md-8">
-                                <button type="submit" class="btn-gold shadow">
-                                    <i class="bi bi-bag-plus-fill me-2"></i> Masukkan Tas
-                                </button>
-                            </div>
+                        <div th:if="${produk.stock == 0}">
+                            <button class="btn-disabled" disabled>Stok Habis - Tidak Dapat Ditempa</button>
                         </div>
-                    </form>
-
-                    <div th:if="${produk.stock == 0}">
-                        <button class="btn-disabled" disabled>Stok Habis - Tidak Dapat Ditempa</button>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<script th:inline="javascript">
-    const maxStock = [[${produk.stock}]];
-    const input = document.getElementById('inputJumlah');
-
-    // 1. Fungsi Tombol +/-
-    function ubahQty(change) {
-        let val = parseInt(input.value) || 1; 
-        val += change;
-        checkBounds(val);
-    }
-
-    // 2. Fungsi Input Manual
-    function validasiManual() {
-        let val = parseInt(input.value);
-        if (isNaN(val)) val = 1;
-        checkBounds(val);
-    }
-
-    // 3. Cek Batas
-    function checkBounds(val) {
-        if (val < 1) {
-            val = 1;
-        } 
-        if (val > maxStock) {
-            let setMax = confirm("Stok hanya tersisa " + maxStock + ". Ambil semua?");
-            if (setMax) {
-                val = maxStock;
-            } else {
-                val = 1;
-            }
-        }
-        input.value = val;
-    }
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    
+    <script th:src="@{/js/detail-produk.js}"></script>
 </body>
+
 </html>

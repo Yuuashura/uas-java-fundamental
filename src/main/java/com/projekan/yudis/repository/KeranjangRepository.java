@@ -11,4 +11,5 @@ import java.util.List;
 public interface KeranjangRepository extends JpaRepository<Keranjang, Integer> {
     // Mencari daftar keranjang milik user tertentu
     List<Keranjang> findByUser(User user);
+    List<Keranjang> findByProduk_IdProduct(Integer idProduk);
 }

@@ -1,128 +1,257 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Keranjang Belanja - Toko Yudis</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <title>Keranjang Belanja - Inazuma Market</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    
+    <link rel="stylesheet" th:href="@{/css/bootstrap-icons.css}">
     
     <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; }
-        .navbar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .card-custom { border: none; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
-        .img-thumb { width: 80px; height: 80px; object-fit: cover; border-radius: 10px; border: 1px solid #eee; }
-        .btn-checkout {
-            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-            border: none; color: white; border-radius: 50px; font-weight: 600; transition: 0.3s;
+        /* === ATMOSPHERE (Background & Font) === */
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #1e1535;
+            background-image: url('https://raw.githubusercontent.com/Yuuashura/assets/refs/heads/main/1362745.png');
+            background-attachment: fixed; 
+            background-size: cover; 
+            background-position: center;
+            color: #fff; 
+            min-height: 100vh;
         }
-        .btn-checkout:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4); color: white; }
-        .btn-checkout:disabled { background: #ccc; transform: none; box-shadow: none; cursor: not-allowed; }
-        .sticky-summary { position: sticky; top: 100px; }
-        .form-check-input { width: 1.3em; height: 1.3em; cursor: pointer; border: 2px solid #ccc; }
-        .form-check-input:checked { background-color: #764ba2; border-color: #764ba2; }
-        .btn-qty { border-color: #dee2e6; color: #6c757d; }
-        .btn-qty:hover { background-color: #e9ecef; color: #000; }
         
-        /* Hapus panah spin di input number Chrome/Safari */
-        input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        /* Overlay Gelap */
+        body::after {
+            content: ''; position: fixed; inset: 0; 
+            background: rgba(10, 5, 20, 0.85); z-index: -1;
+        }
+
+        /* === NAVBAR KACA === */
+        .navbar-glass {
+            background: rgba(30, 20, 60, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(162, 155, 254, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        .brand-title {
+            font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: 2px;
+            color: #a29bfe; text-shadow: 0 0 10px rgba(162, 155, 254, 0.3);
+        }
+
+        /* === GLASS CARD (CONTAINER UTAMA) === */
+        .glass-panel {
+            background: rgba(40, 30, 70, 0.6);
+            border: 1px solid rgba(162, 155, 254, 0.2);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            backdrop-filter: blur(5px);
+            padding: 20px;
+        }
+
+        /* === ITEM LIST === */
+        .cart-item {
+            border-bottom: 1px solid rgba(162, 155, 254, 0.15);
+            padding: 20px 0;
+            transition: 0.3s;
+        }
+        .cart-item:last-child { border-bottom: none; }
+        .cart-item:hover { background: rgba(255, 255, 255, 0.03); }
+
+        /* CHECKBOX CUSTOM */
+        .form-check-input {
+            background-color: rgba(0,0,0,0.5);
+            border: 1px solid #a29bfe;
+            width: 1.3em; height: 1.3em;
+            cursor: pointer;
+        }
+        .form-check-input:checked {
+            background-color: #a29bfe;
+            border-color: #a29bfe;
+        }
+        .form-check-input:focus { box-shadow: 0 0 10px rgba(162, 155, 254, 0.5); }
+
+        /* GAMBAR PRODUK */
+        .img-thumb {
+            width: 80px; height: 80px; 
+            object-fit: cover; 
+            border-radius: 10px; 
+            border: 1px solid rgba(162, 155, 254, 0.3);
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+        }
+
+        /* QUANTITY SPINNER (Tombol +/-) */
+        .qty-container {
+            display: inline-flex; align-items: center; justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px; padding: 4px; background: rgba(0,0,0,0.3);
+        }
+        .btn-qty {
+            width: 28px; height: 28px; border-radius: 50%; border: none;
+            background: rgba(255, 255, 255, 0.1); color: #fff;
+            font-weight: bold; transition: 0.2s; display: flex; align-items: center; justify-content: center;
+            text-decoration: none;
+        }
+        .btn-qty:hover:not(.disabled) { background: #a29bfe; color: #000; box-shadow: 0 0 10px #a29bfe; }
+        .btn-qty.disabled { opacity: 0.3; cursor: default; }
+
+        .input-qty {
+            border: none; text-align: center; width: 40px;
+            font-weight: bold; font-size: 1rem; background: transparent; color: #fff;
+            padding: 0; margin: 0 5px;
+        }
+        .input-qty:focus { outline: none; }
+        /* Hapus panah browser */
+        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+
+        /* TEXT STYLES */
+        .product-title { font-weight: 700; color: #fff; font-size: 1.1rem; }
+        .product-cat { font-size: 0.8rem; color: #a29bfe; text-transform: uppercase; letter-spacing: 1px; }
+        .product-price { color: #fdcb6e; font-family: 'Cinzel', serif; font-weight: bold; }
+
+        /* === RINGKASAN BELANJA (STICKY) === */
+        .sticky-summary { position: sticky; top: 100px; }
+        
+        .summary-title { font-family: 'Cinzel', serif; color: #fdcb6e; margin-bottom: 20px; }
+        
+        .btn-checkout {
+            background: linear-gradient(135deg, #fdcb6e, #e17055);
+            border: none; color: #2d3436; font-weight: bold; font-family: 'Cinzel', serif;
+            border-radius: 50px; transition: 0.3s; width: 100%; padding: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .btn-checkout:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(253, 203, 110, 0.6);
+            color: #000;
+        }
+        .btn-checkout:disabled {
+            background: rgba(255,255,255,0.1); color: #777; cursor: not-allowed; box-shadow: none;
+        }
+
+        .btn-delete { color: #ff6b6b; transition: 0.3s; }
+        .btn-delete:hover { color: #ff4757; text-shadow: 0 0 10px #ff4757; }
+
+        /* EMPTY STATE */
+        .empty-cart-icon { font-size: 5rem; color: rgba(255,255,255,0.1); margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark p-3 shadow-sm mb-5">
+<nav class="navbar navbar-expand-lg navbar-dark navbar-glass p-3 sticky-top">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="/"><i class="bi bi-chevron-left me-2"></i>Lanjut Belanja</a>
-        <span class="navbar-text text-white fw-bold">Keranjang Saya</span>
+        <a class="navbar-brand d-flex align-items-center" href="/">
+            <i class="bi bi-chevron-left me-2"></i>
+            <span class="brand-title">Lanjut Belanja</span>
+        </a>
+        <span class="navbar-text text-white fw-bold" style="letter-spacing: 1px;">TAS SAYA</span>
     </div>
 </nav>
 
-<div class="container pb-5">
+<div class="container py-5">
     <form action="/checkout" method="get" id="formCheckout">
 
-        <div th:if="${listKeranjang.empty}" class="text-center py-5">
-            <div class="mb-4"><i class="bi bi-cart-x text-muted" style="font-size: 5rem; opacity: 0.3;"></i></div>
-            <h3 class="fw-bold text-dark">Keranjangmu Kosong</h3>
-            <p class="text-muted">Wah, belum ada barang nih. Yuk belanja dulu!</p>
-            <a href="/" class="btn btn-checkout px-5 py-2 mt-3">Mulai Belanja</a>
+        <div th:if="${listKeranjang.empty}" class="text-center py-5 glass-panel">
+            <i class="bi bi-bag-x empty-cart-icon"></i>
+            <h3 class="fw-bold" style="font-family: 'Cinzel'; color: #a29bfe;">Tas Masih Kosong</h3>
+            <p class="text-white-50">Sepertinya Paduka belum memasukkan artefak apapun.</p>
+            <a href="/" class="btn btn-outline-light rounded-pill px-5 mt-3">Mulai Menjelajah</a>
         </div>
 
-        <div th:unless="${listKeranjang.empty}" class="row">
-            <div class="col-lg-8 mb-4">
-                <div class="card card-custom p-4 bg-white">
-                    <div class="d-flex align-items-center mb-4 border-bottom pb-3">
-                        <div class="form-check">
+        <div th:unless="${listKeranjang.empty}" class="row g-4">
+            
+            <div class="col-lg-8">
+                <div class="glass-panel">
+                    <div class="d-flex align-items-center mb-3 pb-3 border-bottom border-secondary border-opacity-25">
+                        <div class="form-check m-0">
                             <input class="form-check-input" type="checkbox" id="checkAll" onchange="toggleAll(this)">
-                            <label class="form-check-label fw-bold ms-2 cursor-pointer" for="checkAll">Pilih Semua</label>
+                            <label class="form-check-label fw-bold ms-2 text-white" for="checkAll" style="cursor: pointer;">Pilih Semua</label>
                         </div>
-                        <span class="ms-auto fw-bold text-muted">Item (<span th:text="${listKeranjang.size()}">0</span>)</span>
+                        <span class="ms-auto fw-bold text-white-50">Total Item: <span class="text-white" th:text="${listKeranjang.size()}">0</span></span>
                     </div>
                     
-                    <div th:each="item : ${listKeranjang}" class="row align-items-center mb-4 border-bottom pb-4">
-                        <div class="col-1">
-                            <input class="form-check-input item-checkbox" type="checkbox" 
-                                   name="idKeranjang" 
-                                   th:value="${item.idKeranjang}"
-                                   th:data-subtotal="${item.harga * item.jumlah}"
-                                   onchange="hitungTotal()">
-                        </div>
-                        <div class="col-3 col-md-2">
-                            <img th:if="${item.produk.gambarProduct != null}" 
-                                 th:src="'data:image/jpeg;base64,' + ${item.produk.gambarProduct}" 
-                                 class="img-thumb">
-                            <div th:unless="${item.produk.gambarProduct != null}" class="img-thumb bg-light d-flex align-items-center justify-content-center text-muted small">No Img</div>
-                        </div>
-                        <div class="col-8 col-md-4">
-                            <h6 class="fw-bold m-0 text-dark" th:text="${item.produk.namaProduct}">Nama Produk</h6>
-                            <small class="text-muted" th:text="${item.produk.kategoriProduct}">Kategori</small>
-                            <div class="text-primary fw-bold mt-1" th:text="'Rp ' + ${item.harga}">Rp 0</div>
-                            <small class="text-danger" th:if="${item.jumlah >= item.produk.stock}">*Stok Maksimal</small>
-                        </div>
+                    <div th:each="item : ${listKeranjang}" class="cart-item">
+                        <div class="row align-items-center">
+                            
+                            <div class="col-1 text-center">
+                                <input class="form-check-input item-checkbox" type="checkbox" 
+                                       name="idKeranjang" 
+                                       th:value="${item.idKeranjang}"
+                                       th:data-subtotal="${item.harga * item.jumlah}"
+                                       onchange="hitungTotal()">
+                            </div>
 
-                        <div class="col-6 col-md-3 mt-3 mt-md-0 d-flex justify-content-center">
-                            <div class="input-group input-group-sm" style="width: 110px;">
-                                <a th:href="@{/keranjang/ubah/{id}(id=${item.idKeranjang}, change=-1)}" 
-                                   class="btn btn-qty border" th:classappend="${item.jumlah <= 1} ? 'disabled' : ''">
-                                    <i class="bi bi-dash"></i>
-                                </a>
+                            <div class="col-3 col-md-2">
+                                <img th:if="${item.produk.gambarProduct != null}" 
+                                     th:src="'data:image/jpeg;base64,' + ${item.produk.gambarProduct}" 
+                                     class="img-thumb">
+                                <div th:unless="${item.produk.gambarProduct != null}" 
+                                     class="img-thumb d-flex align-items-center justify-content-center bg-dark text-white-50 small">
+                                    No Img
+                                </div>
+                            </div>
+
+                            <div class="col-8 col-md-5">
+                                <small class="product-cat" th:text="${item.produk.kategoriProduct}">Kategori</small>
+                                <h6 class="product-title m-0 mt-1" th:text="${item.produk.namaProduct}">Nama Produk</h6>
+                                <div class="product-price mt-1" th:text="'Rp ' + ${item.harga}">Rp 0</div>
+                                <small class="text-danger fw-bold" th:if="${item.jumlah >= item.produk.stock}" style="font-size: 0.75rem;">
+                                    <i class="bi bi-exclamation-circle-fill"></i> Stok Maksimal
+                                </small>
+                            </div>
+
+                            <div class="col-12 col-md-4 mt-3 mt-md-0 d-flex align-items-center justify-content-between justify-content-md-end">
                                 
-                                <input type="number" class="form-control text-center bg-white border-top border-bottom" 
-                                       th:value="${item.jumlah}" 
-                                       min="1" th:max="${item.produk.stock}"
-                                       th:data-id="${item.idKeranjang}"
-                                       onchange="updateManual(this)"
-                                       style="font-weight: bold;">
-                                
-                                <a th:href="@{/keranjang/ubah/{id}(id=${item.idKeranjang}, change=1)}" 
-                                   class="btn btn-qty border" th:classappend="${item.jumlah >= item.produk.stock} ? 'disabled' : ''">
-                                    <i class="bi bi-plus"></i>
+                                <div class="qty-container me-md-4">
+                                    <a th:href="@{/keranjang/ubah/{id}(id=${item.idKeranjang}, change=-1)}" 
+                                       class="btn-qty" th:classappend="${item.jumlah <= 1} ? 'disabled' : ''">
+                                        <i class="bi bi-dash"></i>
+                                    </a>
+                                    
+                                    <input type="number" class="input-qty" 
+                                           th:value="${item.jumlah}" 
+                                           min="1" th:max="${item.produk.stock}"
+                                           th:data-id="${item.idKeranjang}"
+                                           onchange="updateManual(this)">
+                                    
+                                    <a th:href="@{/keranjang/ubah/{id}(id=${item.idKeranjang}, change=1)}" 
+                                       class="btn-qty" th:classappend="${item.jumlah >= item.produk.stock} ? 'disabled' : ''">
+                                        <i class="bi bi-plus"></i>
+                                    </a>
+                                </div>
+
+                                <a th:href="@{/keranjang/hapus/{id}(id=${item.idKeranjang})}" 
+                                   class="btn-delete fs-5" onclick="return confirm('Buang artefak ini dari tas?')" title="Hapus">
+                                    <i class="bi bi-trash3-fill"></i>
                                 </a>
                             </div>
-                        </div>
 
-                        <div class="col-6 col-md-2 mt-3 mt-md-0 text-end">
-                            <a th:href="@{/keranjang/hapus/{id}(id=${item.idKeranjang})}" 
-                               class="text-danger fs-5" onclick="return confirm('Hapus barang ini?')" title="Hapus">
-                                <i class="bi bi-trash"></i>
-                            </a>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="col-lg-4">
-                <div class="card card-custom p-4 bg-white sticky-summary">
-                    <h5 class="fw-bold mb-4">Ringkasan Belanja</h5>
-                    <div class="d-flex justify-content-between mb-4">
-                        <span class="text-muted">Total Harga</span>
-                        <span class="fw-bold text-primary fs-5" id="totalDisplay">Rp 0</span>
+                <div class="glass-panel sticky-summary">
+                    <h5 class="summary-title"><i class="bi bi-receipt me-2"></i>Ringkasan</h5>
+                    
+                    <div class="d-flex justify-content-between mb-4 pb-3 border-bottom border-secondary border-opacity-25">
+                        <span class="text-white-50">Total Harga Barang</span>
+                        <span class="fw-bold product-price fs-5" id="totalDisplay">Rp 0</span>
                     </div>
-                    <button type="submit" id="btnCheckout" class="btn btn-checkout w-100 py-3 shadow-sm" disabled>
-                        Checkout (<span id="countDisplay">0</span>)
+                    
+                    <button type="submit" id="btnCheckout" class="btn btn-checkout" disabled>
+                        BAYAR SEKARANG (<span id="countDisplay">0</span>)
                     </button>
-                    <div class="text-center mt-3 small text-muted"><i class="bi bi-shield-check me-1"></i> Pilih barang dulu untuk lanjut</div>
+                    
+                    <div class="text-center mt-3 small text-white-50">
+                        <i class="bi bi-shield-check me-1 text-success"></i> Transaksi Aman & Terpercaya
+                    </div>
                 </div>
             </div>
+
         </div>
     </form>
 </div>
@@ -144,27 +273,38 @@
                 count++;
             }
         });
+        // Format Rupiah Manual
         document.getElementById('totalDisplay').innerText = 'Rp ' + total.toLocaleString('id-ID');
         document.getElementById('countDisplay').innerText = count;
         
         const btn = document.getElementById('btnCheckout');
-        count > 0 ? btn.removeAttribute('disabled') : btn.setAttribute('disabled', 'disabled');
+        if(count > 0) {
+            btn.removeAttribute('disabled');
+            btn.style.opacity = "1";
+            btn.style.cursor = "pointer";
+        } else {
+            btn.setAttribute('disabled', 'disabled');
+            btn.style.opacity = "0.5";
+            btn.style.cursor = "not-allowed";
+        }
         
         const checkAll = document.getElementById('checkAll');
-        checkAll.checked = Array.from(checkboxes).length > 0 && Array.from(checkboxes).every(cb => cb.checked);
+        if(checkboxes.length > 0) {
+            checkAll.checked = Array.from(checkboxes).every(cb => cb.checked);
+        }
     }
 
     // FUNGSI UPDATE MANUAL
     function updateManual(inputElement) {
         const idKeranjang = inputElement.getAttribute('data-id');
         const jumlahBaru = inputElement.value;
-        // Redirect ke controller
         window.location.href = '/keranjang/set/' + idKeranjang + '?jumlah=' + jumlahBaru;
     }
     
     window.onload = hitungTotal;
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+
 </body>
 </html>
