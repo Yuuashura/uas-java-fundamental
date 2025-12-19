@@ -24,10 +24,10 @@ public class Keranjang {
     private Produk produk;
 
     private Integer jumlah;
-    
+
     // Harga per item saat dimasukkan (opsional, tapi bagus buat history)
-    private Integer harga; 
-    
+    private Integer harga;
+
     // Mencatat kapan dimasukkan
     private LocalDateTime tanggalKeranjang = LocalDateTime.now();
 }

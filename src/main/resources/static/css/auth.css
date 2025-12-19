@@ -1,0 +1,412 @@
+/* ===== VARIABLES & RESET ===== */
+:root {
+    --primary: #8a2be2;
+    --primary-dark: #5a1e9c;
+    --secondary: #00b4d8;
+    --accent: #ff6b6b;
+    --gold: #ffd700;
+    --lightning: #9d4edd;
+    --electro: #a29bfe;
+    --dark-bg: #0a0514;
+    --card-bg: rgba(30, 20, 60, 0.85);
+    --nav-bg: rgba(15, 10, 30, 0.95);
+    --text-light: #f8f9fa;
+    --text-muted: #adb5bd;
+    --border-color: rgba(162, 155, 254, 0.3);
+    --shadow-glow: 0 0 30px rgba(157, 78, 221, 0.5);
+    --radius-sm: 8px;
+    --radius-md: 15px;
+    --radius-lg: 25px;
+    --radius-xl: 50px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+/* ===== BACKGROUND ===== */
+body.auth-page {
+    font-family: 'Quicksand', sans-serif;
+    background: url('https://raw.githubusercontent.com/Yuuashura/assets/refs/heads/main/1362745.png') no-repeat center center fixed;
+    background-size: cover;
+    color: var(--text-light);
+    line-height: 1.6;
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+/* Overlay Gelap */
+body.auth-page::before {
+    content: '';
+    position: fixed;
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
+    background: rgba(15, 10, 30, 0.75);
+    z-index: -1;
+}
+
+/* ===== TYPOGRAPHY ===== */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* ===== AUTH CARD ===== */
+.auth-card {
+    position: relative;
+    width: 100%;
+    max-width: 450px;
+    background: rgba(30, 20, 60, 0.9);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem;
+    box-shadow: var(--shadow-glow),
+                0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+}
+
+/* Efek Lightning Border */
+.auth-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, 
+        transparent, 
+        var(--lightning), 
+        var(--secondary), 
+        var(--lightning), 
+        transparent);
+    border-radius: calc(var(--radius-lg) + 2px);
+    z-index: -1;
+    opacity: 0.3;
+    animation: borderGlow 3s ease-in-out infinite;
+}
+
+@keyframes borderGlow {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.5; }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes floatCard {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* ===== TITLES ===== */
+.auth-title {
+    font-family: 'Cinzel', serif;
+    color: var(--text-light);
+    text-align: center;
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 15px var(--lightning);
+    position: relative;
+}
+
+.auth-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--lightning), transparent);
+    border-radius: 2px;
+}
+
+.auth-subtitle {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+    font-style: italic;
+}
+
+/* ===== ALERTS ===== */
+.auth-alert {
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    animation: slideDown 0.5s ease;
+    backdrop-filter: blur(10px);
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.alert-error {
+    background: rgba(255, 71, 87, 0.2);
+    border: 1px solid var(--accent);
+    color: #ffcccb;
+    box-shadow: 0 0 15px rgba(255, 71, 87, 0.3);
+}
+
+.alert-success {
+    background: rgba(46, 213, 115, 0.2);
+    border: 1px solid #2ed573;
+    color: #7bed9f;
+    box-shadow: 0 0 15px rgba(46, 213, 115, 0.3);
+}
+
+/* ===== FORM ELEMENTS ===== */
+.form-group {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--electro);
+    margin-bottom: 0.5rem;
+    padding-left: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-md);
+    color: var(--text-light);
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1rem;
+    transition: var(--transition);
+    outline: none;
+}
+
+.form-input-with-icon {
+    padding-left: 3rem;
+}
+
+.form-input:focus {
+    background: rgba(0, 0, 0, 0.6);
+    border-color: var(--lightning);
+    box-shadow: 0 0 0 3px rgba(157, 78, 221, 0.2);
+}
+
+.form-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--electro);
+    font-size: 1.2rem;
+    pointer-events: none;
+}
+
+/* Grid untuk form row */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+@media (max-width: 480px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Error messages */
+.error-message {
+    color: var(--accent);
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+    text-align: right;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ===== BUTTONS ===== */
+.auth-btn {
+    width: 100%;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, var(--lightning), var(--primary));
+    border: none;
+    border-radius: var(--radius-xl);
+    color: var(--text-light);
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    margin-top: 0.5rem;
+    box-shadow: 0 5px 20px rgba(157, 78, 221, 0.4);
+}
+
+.auth-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.2), 
+        transparent);
+    transition: left 0.5s ease;
+}
+
+.auth-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(157, 78, 221, 0.6);
+}
+
+.auth-btn:hover::before {
+    left: 100%;
+}
+
+.auth-btn:active {
+    transform: translateY(-1px);
+}
+
+/* Tombol khusus untuk register */
+.auth-btn-register {
+    background: linear-gradient(135deg, var(--gold), #ffaa00);
+    color: #1a0b2e;
+    box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+}
+
+.auth-btn-register:hover {
+    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.6);
+}
+
+/* ===== LINK ===== */
+.auth-link {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.auth-link a {
+    color: var(--electro);
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 0.5rem;
+    position: relative;
+    transition: var(--transition);
+}
+
+.auth-link a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--lightning);
+    transition: width 0.3s ease;
+}
+
+.auth-link a:hover {
+    color: var(--text-light);
+    text-shadow: 0 0 10px var(--lightning);
+}
+
+.auth-link a:hover::after {
+    width: 100%;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(10, 5, 20, 0.8);
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--lightning), var(--primary));
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 576px) {
+    .auth-card {
+        padding: 2rem 1.5rem;
+        margin: 1rem;
+    }
+    
+    .auth-title {
+        font-size: 1.8rem;
+    }
+    
+    .form-input {
+        padding: 0.875rem 1rem;
+    }
+}
+
+/* Hide spin button number */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

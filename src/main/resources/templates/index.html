@@ -3,340 +3,264 @@
 
 <head>
     <title>Beranda - Inazuma Market</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{/css/bootstrap-icons.css}">
-
-    <style>
-        body {
-            font-family: 'Quicksand', sans-serif;
-            background: url('https://raw.githubusercontent.com/Yuuashura/assets/refs/heads/main/1362745.png') no-repeat center center fixed;
-            background-size: cover;
-            min-height: 100vh;
-            color: #fff;
-            overflow-x: hidden;
-        }
-
-        /* Overlay Gelap */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 5, 20, 0.75);
-            z-index: -1;
-        }
-
-        /* === NAVBAR KACA === */
-        .navbar-glass {
-            background: rgba(30, 20, 60, 0.7);
-            backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(162, 155, 254, 0.2);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .brand-title {
-            font-family: 'Cinzel', serif;
-            font-weight: 700;
-            letter-spacing: 2px;
-            background: linear-gradient(to right, #a29bfe, #74b9ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 10px rgba(162, 155, 254, 0.3);
-        }
-
-        /* === SEARCH BAR AREA === */
-        .search-container {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .input-glass, .select-glass {
-            background: rgba(0, 0, 0, 0.4) !important;
-            border: 1px solid rgba(162, 155, 254, 0.3) !important;
-            color: #fff !important;
-            border-radius: 50px !important;
-        }
-
-        .input-glass:focus, .select-glass:focus {
-            box-shadow: 0 0 15px rgba(162, 155, 254, 0.4) !important;
-            border-color: #a29bfe !important;
-        }
-
-        .input-glass::placeholder { color: #aaa; }
-
-        /* Opsi Dropdown Gelap */
-        .select-glass option { background-color: #1e1535; color: #fff; }
-
-        /* Tombol Cari Emas */
-        .btn-gold-cari {
-            background: linear-gradient(135deg, #fdcb6e, #e17055);
-            border: none;
-            color: #2d3436;
-            font-weight: bold;
-            border-radius: 50px;
-            width: 100%;
-            transition: 0.3s;
-        }
-
-        .btn-gold-cari:hover {
-            box-shadow: 0 0 20px rgba(253, 203, 110, 0.6);
-            transform: scale(1.05);
-            color: #000;
-        }
-        
-        .btn-gold {
-            background: linear-gradient(135deg, #fdcb6e, #e17055);
-            border: none; color: #2d3436; font-weight: bold; border-radius: 50px; transition: 0.2s;
-        }
-        .btn-gold:hover {
-            box-shadow: 0 0 20px rgba(253, 203, 110, 0.6); transform: scale(1.05); color: #000;
-        }
-
-        /* === PRODUCT CARD === */
-        .card-product {
-            background: rgba(40, 30, 70, 0.6);
-            border: 1px solid rgba(162, 155, 254, 0.2);
-            border-radius: 15px;
-            overflow: hidden;
-            transition: all 0.4s ease;
-            position: relative;
-            backdrop-filter: blur(5px);
-            animation: fadeUp 0.8s ease-out forwards;
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        .card-product:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 15px 40px rgba(138, 43, 226, 0.3), inset 0 0 20px rgba(162, 155, 254, 0.1);
-            border-color: #a29bfe;
-            z-index: 10;
-        }
-
-        .card-img-wrapper {
-            height: 220px;
-            overflow: hidden;
-            position: relative;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .card-img-top { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-        .card-product:hover .card-img-top { transform: scale(1.1); }
-
-        .card-body { padding: 15px; }
-        .product-title { font-weight: 700; color: #dcdde1; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .product-cat { color: #a29bfe; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
-        .price-tag { color: #fdcb6e; font-family: 'Cinzel', serif; font-weight: bold; font-size: 1.1rem; text-shadow: 0 0 10px rgba(253, 203, 110, 0.3); }
-        .badge-electro { background-color: #e056fd; border: 1px solid #fff; box-shadow: 0 0 10px #e056fd; }
-
-        /* === DROPDOWN GLOW === */
-        .dropdown-menu-glass {
-            background: rgba(20, 15, 35, 0.95);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(162, 155, 254, 0.3);
-            border-radius: 15px;
-            margin-top: 15px !important;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-        }
-        .dropdown-item { color: #ccc; transition: 0.2s; }
-        .dropdown-item:hover { background: rgba(162, 155, 254, 0.2); color: #fff; padding-left: 20px; }
-
-        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
-
-        /* LOADER STYLE */
-        #loading-indicator { display: none; padding: 30px; text-align: center; }
-        .electro-spinner {
-            width: 50px; height: 50px;
-            border: 5px solid rgba(162, 155, 254, 0.2); border-top: 5px solid #a29bfe;
-            border-radius: 50%; animation: spin 1s linear infinite;
-            margin: 0 auto; box-shadow: 0 0 15px #a29bfe;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    </style>
+    <!-- Google Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet" />
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="icon" type="image/x-icon" th:href="@{/images/favicon.ico}">
 </head>
 
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-glass sticky-top py-3">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="/">
-                <i class="bi bi-lightning-charge-fill me-2" style="color: #a29bfe;"></i>
-                <span class="brand-title">INAZUMA MARKET</span>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-content">
+            <a href="/" class="brand">
+                <span class="material-symbols-outlined">bolt</span>
+                INAZUMA MARKET
             </a>
 
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+            <div class="nav-links">
+                <!-- Cart Button -->
+                <a th:href="${user != null ? '/keranjang' : '/login'}" 
+                   class="cart-button" 
+                   style="position: relative; display: flex; align-items: center;">
+                    <span class="material-symbols-outlined" style="font-size: 1.8rem;">shopping_cart</span>
+                    <span th:if="${cartCount != null and cartCount > 0}" 
+                          th:text="${cartCount}" 
+                          class="badge">
+                    </span>
+                </a>
 
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto"></ul>
-                <div class="d-flex align-items-center">
+                <!-- User Dropdown (Logged In) -->
+                <div th:if="${user != null}" class="dropdown" id="userDropdown">
+                    <div class="flex items-center gap-1" onclick="toggleDropdown()">
+                        <div style="width: 35px; height: 35px; background: linear-gradient(45deg, #6c5ce7, #a29bfe); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <span class="material-symbols-outlined" style="color: #fff;">person</span>
+                        </div>
+                        <div class="flex flex-col" style="line-height: 1.2; text-align: left;">
+                            <span th:text="${user.namaLengkap}" style="font-weight: bold; font-size: 0.9rem;">Traveler</span>
+                            <small style="color: #a29bfe; font-size: 0.7rem;">Vision Holder</small>
+                        </div>
+                        <span class="material-symbols-outlined" style="font-size: 1.2rem;">expand_more</span>
+                    </div>
 
-                    <a th:href="${user != null ? '/keranjang' : '/login'}"
-                        class="text-white me-4 text-decoration-none position-relative">
-                        <i class="bi bi-cart3 fs-5"></i>
-                        <span th:if="${cartCount != null and cartCount > 0}" th:text="${cartCount}"
-                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill badge-electro">
-                            0
-                        </span>
-                    </a>
-
-                    <div th:if="${user != null}" class="dropdown">
-                        <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
-                            id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <div class="rounded-circle d-flex align-items-center justify-content-center me-2"
-                                style="width: 35px; height: 35px; background: linear-gradient(45deg, #6c5ce7, #a29bfe);">
-                                <i class="bi bi-person-fill"></i>
-                            </div>
-                            <div class="d-flex flex-column text-start" style="line-height: 1.2;">
-                                <span th:text="${user.namaLengkap}" class="fw-bold" style="font-size: 0.9rem;">Traveler</span>
-                                <small style="font-size: 0.7rem; color: #a29bfe;">Vision Holder</small>
-                            </div>
+                    <div class="dropdown-menu">
+                        <a href="/profil" class="dropdown-item">
+                            <span class="material-symbols-outlined icon">manage_accounts</span> Profil
+                        </a>
+                        <a href="/riwayat" class="dropdown-item">
+                            <span class="material-symbols-outlined icon">history</span> Riwayat
+                        </a>
+                        <a href="/keranjang" class="dropdown-item">
+                            <span class="material-symbols-outlined icon">shopping_bag</span> Tas
                         </a>
 
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-glass" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item" href="/profil"><i class="bi bi-person-gear me-2"></i> Profil</a></li>
-                            <li><a class="dropdown-item" href="/riwayat"><i class="bi bi-clock-history me-2"></i> Riwayat</a></li>
-                            <li><a class="dropdown-item" href="/keranjang"><i class="bi bi-bag me-2"></i> Tas</a></li>
-                            
-                            <li th:if="${user.role.name() == 'ADMIN'}"><hr class="dropdown-divider bg-light opacity-25"></li>
-                            <li th:if="${user.role.name() == 'ADMIN'}">
-                                <a class="dropdown-item text-warning" href="/admin/produk"><i class="bi bi-shield-lock me-2"></i> Admin Panel</a>
-                            </li>
-                            
-                            <li><hr class="dropdown-divider bg-light opacity-25"></li>
-                            <li><a class="dropdown-item text-danger" href="/logout"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
-                        </ul>
-                    </div>
+                        <div th:if="${user.role.name() == 'ADMIN'}"
+                            style="border-top: 1px solid rgba(255,255,255,0.1); margin: 5px 0;"></div>
+                        <a th:if="${user.role.name() == 'ADMIN'}" 
+                           href="/admin/produk" 
+                           class="dropdown-item"
+                           style="color: var(--gold);">
+                            <span class="material-symbols-outlined icon">admin_panel_settings</span> Admin Panel
+                        </a>
 
-                    <div th:unless="${user != null}">
-                        <a href="/login" class="btn btn-sm btn-outline-light rounded-pill px-3 me-2">Masuk</a>
-                        <a href="/daftar" class="btn btn-sm btn-gold px-3">Daftar</a>
+                        <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 5px 0;"></div>
+                        <a href="/logout" class="dropdown-item" style="color: #ff6b6b;">
+                            <span class="material-symbols-outlined icon">logout</span> Logout
+                        </a>
                     </div>
+                </div>
+
+                <!-- Login/Register Buttons (Not Logged In) -->
+                <div th:unless="${user != null}" class="flex gap-1">
+                    <a href="/login" class="btn btn-outline">Masuk</a>
+                    <a href="/daftar" class="btn btn-gold">Daftar</a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <div class="container py-5">
+    <!-- Main Content -->
+    <main class="container" style="padding-top: 40px; padding-bottom: 60px;">
 
-        <div class="search-container">
-            <form action="/" method="get" id="searchForm">
-                <div class="row g-3 align-items-center">
-                    
-                    <div class="col-md-5">
-                        <div class="input-group">
-                            <span class="input-group-text input-glass border-end-0"><i class="bi bi-search"></i></span>
-                            <input type="text" name="keyword" class="form-control input-glass border-start-0"
-                                placeholder="Cari artefak, senjata, atau karakter..." th:value="${keyword}">
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <select name="kategori" class="form-select select-glass" onchange="document.getElementById('searchForm').submit()">
-                            <option value="" class="text-dark">Semua Kategori</option>
-                            
-                            <option value="Senjata" th:selected="${kategori == 'Senjata'}">Senjata (Weapons)</option>
-                            <option value="Makanan" th:selected="${kategori == 'Makanan'}">Makanan (Food)</option>
-                            <option value="Material" th:selected="${kategori == 'Material'}">Material & Flora</option>
-                            <option value="Aksesoris" th:selected="${kategori == 'Aksesoris'}">Aksesoris & Artefak</option>
-                            <option value="Merchandise" th:selected="${kategori == 'Merchandise'}">Merchandise & Pajangan</option>
-                            <option value="Buku" th:selected="${kategori == 'Buku'}">Buku & Novel</option>
-                            <option value="Gadget" th:selected="${kategori == 'Gadget'}">Gadget & Alat</option>
-                            <option value="Lainnya" th:selected="${kategori == 'Lainnya'}">Lainnya</option>
-                            <option value="Cosplay" th:selected="${kategori == 'Cosplay'}">Cosplay & Wig</option>
-                            <option value="Apparel" th:selected="${kategori == 'Apparel'}">Apparel (Baju)</option>
-                            <option value="Figure" th:selected="${kategori == 'Figure'}">Figure & Pajangan</option>
-                            <option value="Boneka" th:selected="${kategori == 'Boneka'}">Boneka & Plushie</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-3">
-                        <select name="sortBy" class="form-select select-glass" onchange="document.getElementById('searchForm').submit()">
-                            <option value="" class="text-dark" th:selected="${sortBy == null}">Urutkan: Terbaru</option>
-                            <option value="termurah" th:selected="${sortBy == 'termurah'}">Harga Terendah</option>
-                            <option value="termahal" th:selected="${sortBy == 'termahal'}">Harga Tertinggi</option>
-                            <option value="nama" th:selected="${sortBy == 'nama'}">Nama (A-Z)</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-1">
-                        <button type="submit" class="btn-gold-cari w-100"><i class="bi bi-filter"></i></button>
-                    </div>
+        <!-- Search Section -->
+        <section class="search-section">
+            <form action="/" method="get" id="searchForm" class="search-grid">
+                <!-- Search Input -->
+                <div class="input-wrapper">
+                    <span class="material-symbols-outlined search-icon">search</span>
+                    <input type="text" 
+                           name="keyword" 
+                           class="form-control" 
+                           placeholder="Cari artefak, senjata, atau barang langka..."
+                           th:value="${keyword != null ? keyword : ''}"
+                           autocomplete="off">
                 </div>
+
+                <!-- Category Filter -->
+                <select name="kategori" 
+                        class="form-select" 
+                        onchange="this.form.submit()">
+                    <option value="">Semua Kategori</option>
+                    <option value="Senjata" th:selected="${kategori != null and kategori == 'Senjata'}">⚔️ Senjata</option>
+                    <option value="Makanan" th:selected="${kategori != null and kategori == 'Makanan'}">🍜 Makanan</option>
+                    <option value="Material" th:selected="${kategori != null and kategori == 'Material'}">🪨 Material</option>
+                    <option value="Aksesoris" th:selected="${kategori != null and kategori == 'Aksesoris'}">💎 Aksesoris</option>
+                    <option value="Merchandise" th:selected="${kategori != null and kategori == 'Merchandise'}">🎁 Merchandise</option>
+                    <option value="Buku" th:selected="${kategori != null and kategori == 'Buku'}">📚 Buku</option>
+                    <option value="Gadget" th:selected="${kategori != null and kategori == 'Gadget'}">📱 Gadget</option>
+                    <option value="Cosplay" th:selected="${kategori != null and kategori == 'Cosplay'}">👘 Cosplay</option>
+                    <option value="Apparel" th:selected="${kategori != null and kategori == 'Apparel'}">👕 Apparel</option>
+                    <option value="Figure" th:selected="${kategori != null and kategori == 'Figure'}">🗿 Figure</option>
+                    <option value="Boneka" th:selected="${kategori != null and kategori == 'Boneka'}">🧸 Boneka</option>
+                    <option value="Lainnya" th:selected="${kategori != null and kategori == 'Lainnya'}">🎲 Lainnya</option>
+                </select>
+
+                <!-- Sort Filter -->
+                <select name="sortBy" 
+                        class="form-select" 
+                        onchange="this.form.submit()">
+                    <option value="" th:selected="${sortBy == null}">📅 Terbaru</option>
+                    <option value="termurah" th:selected="${sortBy != null and sortBy == 'termurah'}">💰 Harga Terendah</option>
+                    <option value="termahal" th:selected="${sortBy != null and sortBy == 'termahal'}">💎 Harga Tertinggi</option>
+                    <option value="nama" th:selected="${sortBy != null and sortBy == 'nama'}">🔤 Nama (A-Z)</option>
+                </select>
+
+                <!-- Search Button -->
+                <button type="submit" class="btn btn-gold">
+                    <span class="material-symbols-outlined">filter_list</span> Cari
+                </button>
             </form>
+        </section>
+
+        <!-- Current Filters -->
+        <div th:if="${keyword != null or kategori != null}" class="current-filters">
+            <div th:if="${keyword != null and keyword != ''}" class="filter-tag">
+                <span class="material-symbols-outlined" style="font-size: 1rem;">search</span>
+                <span th:text="'Pencarian: ' + ${keyword}"></span>
+                <a th:href="@{/(kategori=${kategori != null ? kategori : ''}, sortBy=${sortBy != null ? sortBy : ''})}" 
+                   class="remove-btn">
+                    <span class="material-symbols-outlined">close</span>
+                </a>
+            </div>
+            <div th:if="${kategori != null and kategori != ''}" class="filter-tag">
+                <span class="material-symbols-outlined" style="font-size: 1rem;">category</span>
+                <span th:text="'Kategori: ' + ${kategori}"></span>
+                <a th:href="@{/(keyword=${keyword != null ? keyword : ''}, sortBy=${sortBy != null ? sortBy : ''})}" 
+                   class="remove-btn">
+                    <span class="material-symbols-outlined">close</span>
+                </a>
+            </div>
         </div>
 
-        <div class="d-flex align-items-center mb-4 ps-3" style="border-left: 4px solid #a29bfe;">
-            <h4 class="fw-bold m-0" style="font-family: 'Cinzel', serif; letter-spacing: 1px;">KATALOG BARANG</h4>
+        <!-- Catalog Header -->
+        <div class="catalog-header">
+            <div>
+                <h2 class="gradient-text text-glow">KATALOG BARANG</h2>
+                <p>
+                    <span th:text="${listProduk != null ? listProduk.size() : 0} + ' produk ditemukan'" class="product-count"></span>
+                    <span th:if="${keyword != null and keyword != ''}" style="margin-left: 15px; color: var(--secondary);">
+                        untuk "<span th:text="${keyword}" style="font-style: italic;"></span>"
+                    </span>
+                </p>
+            </div>
         </div>
 
-        <div id="product-container" class="row">
-            <div class="col-6 col-md-3 mb-4" th:each="p : ${listProduk}">
-                <a th:href="@{/produk/{id}(id=${p.idProduct})}" class="text-decoration-none text-white d-block">
-                    <div class="card card-product h-100">
-                        <div class="card-img-wrapper">
-                            <img th:if="${p.gambarProduct != null}" th:src="'data:image/jpeg;base64,' + ${p.gambarProduct}"
-                                class="card-img-top" alt="Produk">
-                            
-                            <div th:unless="${p.gambarProduct != null}"
-                                class="card-img-top d-flex align-items-center justify-content-center bg-dark bg-opacity-50">
-                                <span class="text-white-50 small">Gambar Hilang</span>
-                            </div>
+        <!-- Product Grid -->
+        <div id="product-container" class="product-grid">
+            <!-- Product Cards -->
+            <div th:each="p : ${listProduk}" 
+                 class="product-card"
+                 th:attr="data-rarity=${p.harga > 1000000 ? 'legendary' : (p.harga > 500000 ? 'epic' : (p.harga > 100000 ? 'rare' : 'common'))}">
+                <a th:href="@{/produk/{id}(id=${p.idProduct})}">
+                    <!-- Product Image -->
+                    <div class="card-img-wrapper">
+                        <img th:if="${p.gambarProduct != null}" 
+                             th:src="'data:image/jpeg;base64,' + ${p.gambarProduct}"
+                             class="card-img-top"
+                             th:alt="${p.namaProduct}"
+                             loading="lazy">
+                        <div th:unless="${p.gambarProduct != null}" 
+                             class="card-img-top flex justify-center items-center"
+                             style="background: linear-gradient(45deg, #2d3436, #636e72); color: #b2bec3;">
+                            <span class="material-symbols-outlined" style="font-size: 3rem;">image_not_supported</span>
+                        </div>
+                        <span class="card-badge" th:text="${p.kategoriProduct}">Kat</span>
+                    </div>
 
-                            <span class="position-absolute top-0 end-0 badge bg-dark bg-opacity-75 m-2 border border-secondary"
-                                style="font-size: 0.65rem; backdrop-filter: blur(5px);"
-                                th:text="${p.kategoriProduct}">Category</span>
+                    <!-- Product Info -->
+                    <div class="card-body">
+                        <!-- Rarity Stars -->
+                        <div class="product-rarity">
+                            <span class="material-symbols-outlined">star</span>
+                            <span class="material-symbols-outlined">star</span>
+                            <span class="material-symbols-outlined">star</span>
+                            <span class="material-symbols-outlined">star</span>
+                            <span th:text="${p.harga > 1000000 ? 'Legendary' : (p.harga > 500000 ? 'Epic' : (p.harga > 100000 ? 'Rare' : 'Common'))}">
+                                Rarity
+                            </span>
                         </div>
 
-                        <div class="card-body d-flex flex-column">
-                            <small class="product-cat mb-1">Rarity ★★★★</small>
-                            <h6 class="product-title" th:text="${p.namaProduct}">Nama Produk</h6>
-                            
-                            <div class="mt-auto pt-3 border-top border-light border-opacity-10 d-flex justify-content-between align-items-center">
-                                <span class="price-tag" th:text="'Rp ' + ${p.harga}">Rp 0</span>
-                                <span class="text-info opacity-75"><i class="bi bi-arrow-right-circle-fill fs-5"></i></span>
-                            </div>
+                        <!-- Product Title -->
+                        <h3 class="product-title" th:text="${p.namaProduct}">Nama Produk</h3>
+
+                        <!-- Price and Action -->
+                        <div class="card-footer">
+                            <span class="price" th:text="'Rp ' + ${#numbers.formatInteger(p.harga, 0, 'POINT')}">Rp 0</span>
+                            <span class="material-symbols-outlined">arrow_circle_right</span>
                         </div>
                     </div>
                 </a>
             </div>
 
-            <div th:if="${listProduk.empty}" class="col-12 text-center py-5">
-                <div class="text-white-50 opacity-50">
-                    <i class="bi bi-box2 display-1"></i>
-                    <h4 class="mt-3 font-cinzel">Tidak ada barang ditemukan.</h4>
-                    <a href="/" class="btn btn-sm btn-outline-light rounded-pill mt-2">Reset Filter</a>
-                </div>
+            <!-- Empty State -->
+            <div th:if="${listProduk != null and listProduk.empty}" class="empty-state">
+                <span class="material-symbols-outlined">inventory_2</span>
+                <h3>Tidak ada barang ditemukan</h3>
+                <p th:if="${keyword != null and keyword != ''}">
+                    Tidak ada hasil untuk pencarian "<span th:text="${keyword}" style="color: var(--secondary);"></span>"
+                </p>
+                <p th:unless="${keyword != null and keyword != ''}">
+                    Coba gunakan filter yang berbeda atau lihat kategori lainnya
+                </p>
+                <a href="/" class="btn btn-outline">
+                    <span class="material-symbols-outlined">refresh</span> Reset Filter
+                </a>
             </div>
         </div>
 
-        <div id="loading-indicator">
-            <div class="electro-spinner"></div>
-            <p class="mt-3 text-white-50" style="font-family: 'Cinzel', serif;">Memanggil data dari Ley Line...</p>
+        <!-- Loading Indicator -->
+        <div id="loading-indicator" class="loading-indicator" style="display: none;">
+            <div class="spinner-large"></div>
+            <p>Mencari di arsip Inazuma...</p>
         </div>
-        
-        <div id="end-of-list" style="height: 20px;"></div>
 
-    </div>
+        <!-- End of List Marker -->
+        <div id="end-of-list"></div>
 
+    </main>
+
+    <!-- JavaScript Configuration -->
     <script th:inline="javascript">
         window.appConfig = {
-            totalPages: /*[[${totalPages}]]*/ 0,
-            keyword: /*[[${keyword}]]*/ '',
-            kategori: /*[[${kategori}]]*/ '',
-            sortBy: /*[[${sortBy}]]*/ ''
+            totalPages: /*[[${totalPages != null ? totalPages : 1}]]*/ 1,
+            currentPage: /*[[${page != null ? page : 1}]]*/ 1,
+            keyword: /*[[${keyword != null ? keyword : ''}]]*/ '',
+            kategori: /*[[${kategori != null ? kategori : ''}]]*/ '',
+            sortBy: /*[[${sortBy != null ? sortBy : ''}]]*/ '',
+            totalProducts: /*[[${listProduk != null ? listProduk.size() : 0}]]*/ 0
         };
     </script>
 
-    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
     <script th:src="@{/js/home-script.js}"></script>
 </body>
 </html>

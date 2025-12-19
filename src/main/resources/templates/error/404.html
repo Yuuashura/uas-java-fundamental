@@ -1,76 +1,99 @@
 <!DOCTYPE html>
-<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>404 - Halaman Tidak Ditemukan</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <title>404 - Artefak Tidak Ditemukan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Quicksand:wght@600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet">
+    
+    <link rel="stylesheet" th:href="@{/css/global.css}">
     
     <style>
+        /* Override body global agar konten error berada tepat di tengah layar */
         body {
-            font-family: 'Quicksand', sans-serif;
-            background-color: #1e1535;
-            background-image: url('https://raw.githubusercontent.com/Yuuashura/assets/refs/heads/main/1362745.png');
-            background-attachment: fixed; background-size: cover; background-position: center;
-            color: #fff; min-height: 100vh;
-            display: flex; justify-content: center; align-items: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
             text-align: center;
+            overflow: hidden;
         }
-        body::after {
-            content: ''; position: fixed; inset: 0;
-            background: rgba(10, 5, 20, 0.95); z-index: -1;
-        }
-        .error-container {
-            padding: 40px;
-            background: rgba(40, 30, 70, 0.8);
-            border: 1px solid rgba(162, 155, 254, 0.2);
+
+        .error-card {
+            background: rgba(40, 30, 70, 0.85);
+            border: 1px solid rgba(162, 155, 254, 0.3);
             border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            padding: 50px 30px;
+            box-shadow: 0 0 60px rgba(0,0,0,0.6);
+            width: 90%;
             max-width: 600px;
+            backdrop-filter: blur(10px);
+            animation: float 6s ease-in-out infinite;
         }
+
         .error-code {
             font-family: 'Cinzel', serif;
             font-size: 8rem;
-            color: #fdcb6e;
+            color: var(--gold); /* Mengambil warna gold dari global.css */
             line-height: 1;
-            text-shadow: 0 0 20px rgba(253, 203, 110, 0.5);
+            text-shadow: 0 0 30px rgba(253, 203, 110, 0.4);
+            margin-bottom: 10px;
         }
-        .error-message {
+
+        .error-title {
             color: #a29bfe;
-            margin-top: -15px;
             font-size: 1.5rem;
-            font-weight: 600;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
-        .btn-home {
-            background: linear-gradient(135deg, #a29bfe, #8172ff);
-            border: none; color: #fff; font-weight: bold;
-            border-radius: 50px; padding: 10px 30px;
-            transition: 0.3s;
+
+        .error-desc {
+            color: #ccc;
+            margin-bottom: 30px;
+            font-size: 1rem;
+            line-height: 1.6;
         }
-        .btn-home:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(162, 155, 254, 0.5);
+        
+        .path-info {
+            background: rgba(0,0,0,0.3);
+            padding: 8px 15px;
+            border-radius: 50px;
+            color: #ff6b6b;
+            font-size: 0.85rem;
+            display: inline-block;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+
+        /* Animasi Mengambang */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
         }
     </style>
 </head>
 <body>
 
-<div class="error-container">
+<div class="error-card">
     <div class="error-code">404</div>
-    <div class="error-message mb-4">Artefak Tidak Ditemukan</div>
+    <div class="error-title">Artefak Tidak Ditemukan</div>
     
-    <p class="text-white-50">
-        Jalur yang Paduka coba akses ini tidak terdaftar di Shogunate. 
-        Mungkin jalurnya telah hilang atau belum dibangun.
+    <p class="error-desc">
+        Mohon ampun Paduka, jalur yang Anda coba akses ini tidak terdaftar dalam peta Shogunate. 
+        Mungkin jalurnya telah hilang ditelan badai atau belum pernah dibangun.
     </p>
     
-    <p class="text-white-50 small mb-4" th:text="'Jalur yang gagal: ' + ${path}">
-        Jalur yang gagal: /path/yang/salah
-    </p>
-
-    <a href="/" class="btn btn-home">
-        <i class="bi bi-house-door-fill me-2"></i> Kembali ke Gerbang Utama
-    </a>
+    <div class="path-info" th:if="${path}">
+        <span class="material-symbols-outlined" style="font-size: 1rem; vertical-align: middle;">broken_image</span>
+        <span th:text="'Jalur Buntu: ' + ${path}">/path/error</span>
+    </div>
+    
+    <div>
+        <a href="/" class="btn btn-gold">
+            <span class="material-symbols-outlined">home</span> Kembali ke Gerbang Utama
+        </a>
+    </div>
 </div>
 
 </body>

@@ -1,86 +1,450 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Edit Profil - Toko Yudis</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <title>Edit Profil - Inazuma Realm</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet">
+    <!-- Global CSS -->
+    <link rel="stylesheet" th:href="@{/css/global.css}">
     
     <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; }
-        .navbar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .card-profile { border: none; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
-        .form-control:focus { box-shadow: none; border-color: #764ba2; }
+        /* === PROFIL PAGE STYLES === */
+        .profile-page {
+            min-height: 100vh;
+            padding-top: 80px; /* Space for fixed navbar */
+        }
+
+        /* === FIXED NAVBAR === */
+        .profile-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .profile-nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .profile-back-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-white);
+            font-family: var(--font-main);
+            font-weight: 600;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 50px;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-back-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-3px);
+            color: #a29bfe;
+            border-color: rgba(162, 155, 254, 0.3);
+        }
+
+        .profile-title {
+            font-family: var(--font-title);
+            font-weight: 700;
+            color: var(--text-white);
+            font-size: 1.5rem;
+            text-align: center;
+            flex: 1;
+            letter-spacing: 1px;
+        }
+
+        /* === PROFILE CARD === */
+        .profile-card {
+            background: rgba(30, 20, 50, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(162, 155, 254, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+            max-width: 500px;
+            margin: 0 auto;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* === AVATAR SECTION === */
+        .avatar-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .avatar-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #8a2be2, #00b4d8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.3);
+        }
+
+        .avatar-icon .material-symbols-outlined {
+            font-size: 3rem;
+            color: white;
+        }
+
+        .user-name {
+            font-family: var(--font-title);
+            font-size: 1.8rem;
+            color: var(--text-white);
+            margin: 10px 0 5px;
+        }
+
+        .user-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            background: rgba(255, 215, 0, 0.15);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            color: var(--gold);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* === ALERTS === */
+        .profile-alert {
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .alert-success {
+            background: rgba(40, 167, 69, 0.15);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            color: #51cf66;
+        }
+
+        .alert-error {
+            background: rgba(220, 53, 69, 0.15);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            color: #ff6b6b;
+        }
+
+        /* === FORM STYLES === */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-white);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-white);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: #a29bfe;
+            box-shadow: 0 0 0 3px rgba(162, 155, 254, 0.2);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        /* === SEPARATOR === */
+        .separator {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(162, 155, 254, 0.3), transparent);
+            margin: 30px 0;
+        }
+
+        /* === PASSWORD SECTION === */
+        .password-note {
+            color: #ff6b6b;
+            font-size: 0.75rem;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* === SUBMIT BUTTON === */
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-family: var(--font-main);
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(138, 43, 226, 0.4);
+            background: linear-gradient(135deg, #9a40e8, #6b22c6);
+        }
+
+        .submit-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* === RESPONSIVE DESIGN === */
+        @media (max-width: 768px) {
+            .profile-page {
+                padding-top: 70px;
+            }
+            
+            .profile-card {
+                padding: 30px 20px;
+                margin: 0 15px;
+            }
+            
+            .profile-nav-content {
+                gap: 10px;
+            }
+            
+            .profile-title {
+                font-size: 1.3rem;
+            }
+            
+            .profile-back-link {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .form-row .form-group {
+                margin-bottom: 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .user-name {
+                font-size: 1.5rem;
+            }
+            
+            .avatar-icon {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .avatar-icon .material-symbols-outlined {
+                font-size: 2.5rem;
+            }
+            
+            .profile-title {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* === ADDITIONAL UTILITIES === */
+        .text-center {
+            text-align: center;
+        }
+
+        .text-muted {
+            color: var(--text-muted);
+        }
     </style>
 </head>
-<body>
+<body class="profile-page">
+    <!-- FIXED NAVBAR -->
+    <nav class="profile-navbar">
+        <div class="container">
+            <div class="profile-nav-content">
+                <a th:href="@{/}" class="profile-back-link">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                    Kembali ke Home
+                </a>
+                
+                <h1 class="profile-title">Pengaturan Akun</h1>
+                
+                <!-- Empty spacer for alignment -->
+                <div style="width: 120px;"></div>
+            </div>
+        </div>
+    </nav>
 
-<nav class="navbar navbar-expand-lg navbar-dark p-3 shadow-sm mb-5">
-    <div class="container">
-        <a class="navbar-brand fw-bold" href="/"><i class="bi bi-chevron-left me-2"></i>Kembali ke Home</a>
-        <span class="navbar-text text-white fw-bold">Pengaturan Akun</span>
-    </div>
-</nav>
-
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            
-            <div class="card card-profile p-4 bg-white">
-                <div class="text-center mb-4">
-                    <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
-                        <i class="bi bi-person text-secondary" style="font-size: 2.5rem;"></i>
-                    </div>
-                    <h4 class="fw-bold mt-3" th:text="${user.namaLengkap}">Nama User</h4>
-                    <p class="text-muted small">Member Toko Yudis</p>
+    <div class="container" style="padding: 30px 0;">
+        <div class="profile-card">
+            <!-- AVATAR SECTION -->
+            <div class="avatar-container">
+                <div class="avatar-icon">
+                    <span class="material-symbols-outlined">person</span>
                 </div>
-
-                <div th:if="${param.sukses}" class="alert alert-success text-center border-0 rounded-3 mb-4">
-                    <i class="bi bi-check-circle-fill me-2"></i> <span th:text="${param.sukses}"></span>
-                </div>
-
-                <div th:if="${error}" class="alert alert-danger text-center border-0 rounded-3 mb-4">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i> <span th:text="${error}"></span>
-                </div>
-
-                <form action="/profil/update" method="post">
-                    
-                    <div class="mb-3">
-                        <label class="form-label small text-muted fw-bold">Nama Lengkap</label>
-                        <input type="text" name="namaLengkap" class="form-control" th:value="${user.namaLengkap}" required>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label small text-muted fw-bold">Username</label>
-                            <input type="text" name="username" class="form-control" th:value="${user.username}" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label small text-muted fw-bold">Nomor HP</label>
-                            <input type="number" name="noHp" class="form-control" th:value="${user.noHp}" required>
-                        </div>
-                    </div>
-
-                    <hr class="my-4">
-                    
-                    <div class="mb-4">
-                        <label class="form-label small text-muted fw-bold text-danger">Ganti Password (Opsional)</label>
-                        <input type="password" name="newPassword" class="form-control" placeholder="Biarkan kosong jika tidak ingin mengganti">
-                        <small class="text-muted" style="font-size: 0.75rem;">*Minimal 6 karakter jika ingin diubah</small>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary w-100 py-2 rounded-pill fw-bold" 
-                            style="background: #764ba2; border: none;">
-                        Simpan Perubahan
-                    </button>
-
-                </form>
+                <h2 class="user-name" th:text="${user.namaLengkap}">Nama User</h2>
+                <span class="user-badge">Traveler Inazuma</span>
             </div>
 
+            <!-- SUCCESS MESSAGE -->
+            <div th:if="${param.sukses}" class="profile-alert alert-success">
+                <span class="material-symbols-outlined">check_circle</span>
+                <span th:text="${param.sukses}">Perubahan berhasil disimpan!</span>
+            </div>
+
+            <!-- ERROR MESSAGE -->
+            <div th:if="${error}" class="profile-alert alert-error">
+                <span class="material-symbols-outlined">warning</span>
+                <span th:text="${error}">Terjadi kesalahan</span>
+            </div>
+
+            <!-- EDIT FORM -->
+            <form th:action="@{/profil/update}" method="post">
+                <!-- FULL NAME -->
+                <div class="form-group">
+                    <label class="form-label">Nama Lengkap</label>
+                    <input type="text" name="namaLengkap" class="form-control" 
+                           th:value="${user.namaLengkap}" 
+                           placeholder="Masukkan nama lengkap"
+                           required>
+                </div>
+
+                <!-- USERNAME & PHONE -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <input type="text" name="username" class="form-control" 
+                               th:value="${user.username}" 
+                               placeholder="Masukkan username"
+                               required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Nomor HP</label>
+                        <input type="text" name="noHp" class="form-control" 
+                               th:value="${user.noHp}" 
+                               placeholder="08xxxxxxxxx"
+                               pattern="[0-9]*"
+                               minlength="12"
+                               required>
+                    </div>
+                </div>
+
+                <!-- SEPARATOR -->
+                <div class="separator"></div>
+
+                <!-- PASSWORD CHANGE -->
+                <div class="form-group">
+                    <label class="form-label" style="color: #ff6b6b;">Ganti Password (Opsional)</label>
+                    <input type="password" name="newPassword" class="form-control" 
+                           placeholder="Biarkan kosong jika tidak ingin mengganti"
+                           minlength="6">
+                    <div class="password-note">
+                        <span class="material-symbols-outlined" style="font-size: 1rem;">info</span>
+                        Minimal 6 karakter jika ingin diubah
+                    </div>
+                </div>
+
+                <!-- SUBMIT BUTTON -->
+                <button type="submit" class="submit-btn">
+                    <span class="material-symbols-outlined" style="vertical-align: middle; margin-right: 8px;">save</span>
+                    Simpan Perubahan
+                </button>
+            </form>
         </div>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Real-time validation for phone number
+        document.addEventListener('DOMContentLoaded', function() {
+            const phoneInput = document.querySelector('input[name="noHp"]');
+            
+            if (phoneInput) {
+                phoneInput.addEventListener('input', function(e) {
+                    // Allow only numbers
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                });
+            }
+            
+            // Form validation
+            const form = document.querySelector('form');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    const passwordInput = document.querySelector('input[name="newPassword"]');
+                    
+                    if (passwordInput.value !== '' && passwordInput.value.length < 6) {
+                        e.preventDefault();
+                        alert('Password baru harus minimal 6 karakter!');
+                        passwordInput.focus();
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>

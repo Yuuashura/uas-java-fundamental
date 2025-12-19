@@ -4,9 +4,9 @@
     <title>Checkout - Inazuma Market</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet">
     
-    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{/css/bootstrap-icons.css}">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
     
     <style>
         /* === ATMOSPHERE === */
@@ -25,8 +25,28 @@
         .navbar-glass {
             background: rgba(30, 20, 60, 0.85); backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(162, 155, 254, 0.2);
+            padding: 15px 0;
         }
-        .brand-title { font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: 2px; color: #a29bfe; }
+        .brand-title { font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: 2px; color: #a29bfe; font-size: 1.5rem; display: flex; align-items: center; gap: 10px; }
+
+        /* === LAYOUT UTILS (Manual Grid pengganti Bootstrap) === */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        .row { display: flex; flex-wrap: wrap; margin: -10px; }
+        .col-left { flex: 0 0 60%; max-width: 60%; padding: 10px; }
+        .col-right { flex: 0 0 40%; max-width: 40%; padding: 10px; }
+        
+        @media (max-width: 992px) {
+            .col-left, .col-right { flex: 0 0 100%; max-width: 100%; }
+        }
+
+        .mb-3 { margin-bottom: 1rem; }
+        .mb-4 { margin-bottom: 1.5rem; }
+        .text-center { text-align: center; }
+        .fw-bold { font-weight: 700; }
+        .text-warning { color: #ffc107; }
+        .text-info { color: #0dcaf0; }
+        .text-white-50 { color: rgba(255,255,255,0.5); font-size: 0.9rem; }
 
         /* === GLASS CARD === */
         .glass-panel {
@@ -37,31 +57,38 @@
             backdrop-filter: blur(5px);
             height: 100%;
         }
+        
+        /* Fix height auto for right column */
+        .col-right .glass-panel { height: auto; }
 
         /* FORM ELEMENTS */
-        .form-label { color: #a29bfe; font-weight: bold; font-size: 0.9rem; margin-bottom: 8px; }
+        .form-label { color: #a29bfe; font-weight: bold; font-size: 0.9rem; margin-bottom: 8px; display: block; }
         
         .form-control, .form-select {
+            width: 100%;
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(162, 155, 254, 0.3);
             color: #fff; border-radius: 10px; padding: 12px;
+            font-family: inherit; font-size: 1rem;
+            outline: none; transition: 0.3s; box-sizing: border-box; /* Penting */
         }
         .form-control:focus, .form-select:focus {
             background: rgba(0, 0, 0, 0.5);
-            border-color: #a29bfe; color: #fff; box-shadow: 0 0 15px rgba(162, 155, 254, 0.3);
+            border-color: #a29bfe; box-shadow: 0 0 15px rgba(162, 155, 254, 0.3);
         }
-        /* Placeholder styling */
-        ::placeholder { color: rgba(255, 255, 255, 0.3) !important; }
+        .form-select option { background: #1e1535; color: #fff; }
+        ::placeholder { color: rgba(255, 255, 255, 0.3); }
 
         /* LIST GROUP */
         .list-group-item {
-            background: transparent; color: #fff;
-            border-color: rgba(255, 255, 255, 0.1);
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             padding: 15px 0;
         }
+        .list-group-item:last-child { border-bottom: none; }
         
         /* SUMMARY SECTION */
-        .summary-title { font-family: 'Cinzel', serif; color: #fdcb6e; margin-bottom: 20px; }
+        .summary-title { font-family: 'Cinzel', serif; color: #fdcb6e; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-size: 1.3rem; justify-content: center; }
         .summary-row { display: flex; justify-content: space-between; margin-bottom: 10px; color: #ccc; }
         .total-row {
             display: flex; justify-content: space-between; margin-top: 20px; padding-top: 20px;
@@ -73,7 +100,8 @@
             background: linear-gradient(135deg, #fdcb6e, #e17055);
             border: none; color: #2d3436; font-weight: bold; font-family: 'Cinzel', serif;
             border-radius: 50px; width: 100%; padding: 15px; margin-top: 25px;
-            transition: 0.3s; letter-spacing: 1px;
+            transition: 0.3s; letter-spacing: 1px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 1rem;
         }
         .btn-gold:hover {
             transform: translateY(-3px);
@@ -81,73 +109,98 @@
             color: #000;
         }
         
-        .section-title { font-family: 'Cinzel', serif; color: #fff; border-bottom: 2px solid #a29bfe; display: inline-block; padding-bottom: 5px; margin-bottom: 20px; }
+        .btn-back {
+            border: 1px solid #fff; border-radius: 50px; padding: 5px 15px; 
+            color: #fff; text-decoration: none; display: flex; align-items: center; gap: 5px; font-size: 0.9rem; transition: 0.3s;
+        }
+        .btn-back:hover { background: rgba(255,255,255,0.1); }
+
+        .section-title { 
+            font-family: 'Cinzel', serif; color: #fff; border-bottom: 2px solid #a29bfe; 
+            display: inline-flex; align-items: center; gap: 10px; padding-bottom: 5px; margin-bottom: 20px; font-size: 1.2rem;
+        }
     </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark navbar-glass p-3 sticky-top">
-    <div class="container">
-        <a class="navbar-brand d-flex align-items-center" href="/">
-            <i class="bi bi-lightning-charge-fill me-2" style="color: #a29bfe;"></i>
-            <span class="brand-title">INAZUMA MARKET</span>
+<nav class="navbar-glass sticky-top">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+        <a href="/" style="text-decoration: none;" class="brand-title">
+            <span class="material-symbols-outlined">bolt</span>
+            INAZUMA MARKET
         </a>
-        <a href="/keranjang" class="btn btn-sm btn-outline-light rounded-pill px-3">
-            <i class="bi bi-arrow-left me-2"></i> Kembali
+        <a href="/keranjang" class="btn-back">
+            <span class="material-symbols-outlined" style="font-size: 1.2rem;">arrow_back</span> Kembali
         </a>
     </div>
 </nav>
 
-<div class="container py-5">
-    <h2 class="mb-5 text-center" style="font-family: 'Cinzel'; color: #fdcb6e;">Konfirmasi Pengiriman</h2>
+<div class="container" style="padding-top: 40px; padding-bottom: 40px;">
+    <h2 class="mb-4 text-center" style="font-family: 'Cinzel'; color: #fdcb6e;">Konfirmasi Pengiriman</h2>
 
     <form action="/transaksi/proses" method="post">
-        <div class="row g-4">
+        <div class="row">
             
-            <div class="col-lg-7">
+            <div class="col-left">
                 
                 <div class="glass-panel mb-4">
-                    <h5 class="section-title"><i class="bi bi-geo-alt-fill me-2"></i>Alamat Tujuan</h5>
+                    <h5 class="section-title">
+                        <span class="material-symbols-outlined">location_on</span> Alamat Tujuan
+                    </h5>
                     
                     <div class="mb-3">
-                        <label class="form-label">Alamat Lengkap</label>
-                        <textarea name="alamatLengkap" class="form-control" rows="3" placeholder="Nama Jalan, RT/RW, Nomor Rumah, Kelurahan..." required></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Pilih Wilayah (Ongkir)</label>
+                        <label class="form-label">Pilih Wilayah (Provinsi/Pulau)</label>
                         <select name="idProvinsi" class="form-select" id="selectProvinsi" onchange="hitungGrandTotal()" required>
-                            <option value="" data-ongkir="0" class="text-dark">-- Pilih Wilayah --</option>
+                            <option value="" data-ongkir="0">-- Pilih Wilayah --</option>
                             <option th:each="p : ${listProvinsi}" 
                                     th:value="${p.idProvinsi}" 
                                     th:text="${p.namaProvinsi} + ' (Ongkir: ' + ${p.hargaOngkir} + ')'"
-                                    th:data-ongkir="${p.hargaOngkir}"
-                                    class="text-dark">
+                                    th:data-ongkir="${p.hargaOngkir}">
                             </option>
                         </select>
                     </div>
-                </div>
 
-                <div class="glass-panel">
-                    <h5 class="section-title"><i class="bi bi-box-seam me-2"></i>Barang yang Dibeli</h5>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between align-items-center" th:each="item : ${listBarang}">
+                    <div class="mb-3">
+                        <label class="form-label">Kabupaten / Kota</label>
+                        <input type="text" name="kabupaten" class="form-control" placeholder="Contoh: Bandung" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Kecamatan</label>
+                        <input type="text" name="kecamatan" class="form-control" placeholder="Contoh: Coblong" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Jalan / Detail Alamat</label>
+                        <textarea name="detailAlamat" class="form-control" rows="3" placeholder="Nama Jalan, No Rumah, RT/RW, Patokan..." required></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-right">
+                
+                <div class="glass-panel mb-4">
+                    <h5 class="section-title">
+                        <span class="material-symbols-outlined">inventory_2</span> Barang yang Dibeli
+                    </h5>
+                    <div style="display: flex; flex-direction: column;">
+                        <div class="list-group-item" th:each="item : ${listBarang}">
                             <div>
-                                <span class="fw-bold d-block" th:text="${item.produk.namaProduct}">Produk</span>
+                                <span class="fw-bold" style="display: block; font-size: 1rem;" th:text="${item.produk.namaProduct}">Produk</span>
                                 <small class="text-white-50" th:text="${item.jumlah} + ' x Rp ' + ${item.harga}">1 x 10000</small>
                                 <input type="hidden" name="idKeranjang" th:value="${item.idKeranjang}">
                             </div>
                             <span class="fw-bold text-warning" th:text="'Rp ' + ${item.harga * item.jumlah}">Rp 0</span>
-                        </li>
-                    </ul>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="col-lg-5">
-                <div class="glass-panel sticky-top" style="top: 100px; border: 1px solid rgba(253, 203, 110, 0.3);">
-                    <h5 class="summary-title text-center"><i class="bi bi-receipt me-2"></i>Rincian Biaya</h5>
+                <div class="glass-panel" style="position: sticky; top: 100px; border: 1px solid rgba(253, 203, 110, 0.3);">
+                    <h5 class="summary-title">
+                        <span class="material-symbols-outlined">receipt_long</span> Rincian Biaya
+                    </h5>
                     
-                    <div class="mt-4">
+                    <div style="margin-top: 20px;">
                         <div class="summary-row">
                             <span>Subtotal Barang</span>
                             <span class="fw-bold" th:text="'Rp ' + ${subtotal}">Rp 0</span>
@@ -163,12 +216,13 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-gold shadow">
-                        <i class="bi bi-shield-lock-fill me-2"></i> BAYAR SEKARANG
+                    <button type="submit" class="btn-gold">
+                        <span class="material-symbols-outlined">verified_user</span> BAYAR SEKARANG
                     </button>
                     
-                    <div class="text-center mt-3 small text-white-50">
-                        <i class="bi bi-info-circle me-1"></i> Pastikan alamat sudah benar.
+                    <div class="text-center mt-3 text-white-50" style="font-size: 0.85rem;">
+                        <span class="material-symbols-outlined" style="vertical-align: middle; font-size: 1rem;">info</span> 
+                        Pastikan alamat sudah benar.
                     </div>
                 </div>
             </div>
@@ -178,7 +232,6 @@
 
 <input type="hidden" id="serverSubtotal" th:value="${subtotal}">
 
-<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/js/checkout.js}"></script>
 
 </body>

@@ -35,10 +35,10 @@ public class MainController {
     // ==========================================
     @GetMapping("/")
     public String index(Model model,
-                        @CookieValue(value = "USER_TOKEN", required = false) String token,
-                        @RequestParam(value = "keyword", required = false) String keyword,
-                        @RequestParam(value = "kategori", required = false) String kategori, // <-- Parameter Kategori
-                        @RequestParam(value = "sortBy", required = false) String sortBy) {
+            @CookieValue(value = "USER_TOKEN", required = false) String token,
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "kategori", required = false) String kategori, // <-- Parameter Kategori
+            @RequestParam(value = "sortBy", required = false) String sortBy) {
 
         // A. Cek User Login
         User currentUser = userService.getUserFromToken(token);
@@ -54,12 +54,13 @@ public class MainController {
 
         // Kirim Data ke HTML
         model.addAttribute("listProduk", pageProduk.getContent());
-        
-        // Kirim Parameter Filter Balik ke HTML (agar tidak hilang saat refresh/pindah halaman)
+
+        // Kirim Parameter Filter Balik ke HTML (agar tidak hilang saat refresh/pindah
+        // halaman)
         model.addAttribute("keyword", keyword);
         model.addAttribute("kategori", kategori);
         model.addAttribute("sortBy", sortBy);
-        
+
         // Info untuk JavaScript (Infinite Scroll)
         model.addAttribute("totalPages", pageProduk.getTotalPages());
 
@@ -79,7 +80,7 @@ public class MainController {
             @RequestParam(value = "sortBy", required = false) String sortBy) {
 
         int pageSize = 20;
-        
+
         // Ambil data halaman ke-X
         Page<Produk> pageProduk = produkService.getProdukPaged(keyword, kategori, sortBy, page, pageSize);
 
@@ -98,35 +99,48 @@ public class MainController {
     @GetMapping("/daftar")
     public String formDaftar(Model model, @CookieValue(value = "USER_TOKEN", required = false) String token) {
         User currentUser = userService.getUserFromToken(token);
-        if (currentUser != null) return "redirect:/";
+        if (currentUser != null)
+            return "redirect:/";
         model.addAttribute("user", new User());
         return "register";
     }
 
-    @PostMapping("/daftar")
-    public String prosesDaftar(@Valid @ModelAttribute User user, BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors()) return "register";
-        
-        boolean sukses = userService.register(user);
-        if (!sukses) {
-            model.addAttribute("error", "Username sudah terdaftar! Ganti yang lain.");
+@PostMapping("/daftar")
+    public String prosesDaftar(@Valid @ModelAttribute User user,
+                               BindingResult bindingResult,
+                               Model model) {
+
+        // 1. Cek Validasi Form (Password pendek, dll)
+        if (bindingResult.hasErrors()) {
             return "register";
         }
-        return "redirect:/login";
-    }
 
+        // 2. Panggil Service Register (Return String)
+        String hasil = userService.register(user);
+
+        // 3. Cek Hasil
+        if (hasil.equals("OK")) {
+            // Jika sukses, lempar ke login
+            return "redirect:/login";
+        } else {
+            // Jika gagal (Username/HP duplikat), balikin ke form dengan pesan error
+            model.addAttribute("error", hasil);
+            return "register";
+        }
+    }
     @GetMapping("/login")
     public String formLogin(@CookieValue(value = "USER_TOKEN", required = false) String token) {
         User currentUser = userService.getUserFromToken(token);
-        if (currentUser != null) return "redirect:/";
+        if (currentUser != null)
+            return "redirect:/";
         return "login";
     }
 
     @PostMapping("/login")
     public String prosesLogin(@RequestParam String username,
-                              @RequestParam String password,
-                              HttpServletResponse response,
-                              Model model) {
+            @RequestParam String password,
+            HttpServletResponse response,
+            Model model) {
 
         String token = userService.login(username, password);
 
@@ -151,7 +165,7 @@ public class MainController {
 
     @GetMapping("/logout")
     public String logout(HttpServletResponse response,
-                         @CookieValue(value = "USER_TOKEN", required = false) String token) {
+            @CookieValue(value = "USER_TOKEN", required = false) String token) {
         userService.logout(token);
         Cookie cookie = new Cookie("USER_TOKEN", null);
         cookie.setMaxAge(0);
@@ -166,9 +180,10 @@ public class MainController {
 
     @GetMapping("/profil")
     public String halamanProfil(Model model,
-                                @CookieValue(value = "USER_TOKEN", required = false) String token) {
+            @CookieValue(value = "USER_TOKEN", required = false) String token) {
         User user = userService.getUserFromToken(token);
-        if (user == null) return "redirect:/login";
+        if (user == null)
+            return "redirect:/login";
 
         model.addAttribute("user", user);
         return "profil";
@@ -176,12 +191,13 @@ public class MainController {
 
     @PostMapping("/profil/update")
     public String prosesUpdateProfil(@ModelAttribute User userForm,
-                                     @RequestParam(required = false) String newPassword,
-                                     @CookieValue(value = "USER_TOKEN", required = false) String token,
-                                     Model model) {
+            @RequestParam(required = false) String newPassword,
+            @CookieValue(value = "USER_TOKEN", required = false) String token,
+            Model model) {
 
         User userLogin = userService.getUserFromToken(token);
-        if (userLogin == null) return "redirect:/login";
+        if (userLogin == null)
+            return "redirect:/login";
 
         String hasil = userService.updateDataUser(userLogin, userForm, newPassword);
 

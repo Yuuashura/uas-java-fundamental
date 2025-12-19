@@ -1,202 +1,66 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <title>Daftar - Inazuma Realm</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Quicksand:wght@400;600&display=swap"
-        rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-
-    <style>
-        body {
-            font-family: 'Quicksand', sans-serif;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: url('https://raw.githubusercontent.com/Yuuashura/assets/refs/heads/main/1362745.png') no-repeat center center fixed;
-            background-size: cover;
-            position: relative;
-        }
-
-        body::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 10, 30, 0.7);
-            /* Lebih gelap dikit buat register */
-            z-index: 0;
-        }
-
-        .register-card {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 450px;
-            padding: 30px;
-            background: rgba(30, 20, 60, 0.65);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(178, 166, 227, 0.3);
-            border-radius: 20px;
-            box-shadow: 0 0 35px rgba(138, 43, 226, 0.5);
-            /* Animasi Muncul */
-            animation: slideUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .title {
-            font-family: 'Cinzel', serif;
-            color: #fff;
-            text-align: center;
-            font-size: 1.8rem;
-            margin-bottom: 25px;
-            text-shadow: 0 0 10px #a29bfe;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 15px;
-        }
-
-        /* Input Styling */
-        .input-group-custom {
-            margin-bottom: 20px;
-        }
-
-        .label-custom {
-            color: #d1ccc0;
-            font-size: 0.8rem;
-            margin-left: 15px;
-            margin-bottom: 5px;
-            display: block;
-            font-weight: bold;
-        }
-
-        .input-field {
-            width: 100%;
-            padding: 10px 15px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            color: #fff;
-            transition: 0.3s;
-            outline: none;
-        }
-
-        .input-field:focus {
-            background: rgba(0, 0, 0, 0.7);
-            border-color: #a29bfe;
-            box-shadow: 0 0 12px rgba(162, 155, 254, 0.6);
-        }
-
-        /* Tombol */
-        .btn-glow {
-            width: 100%;
-            padding: 12px;
-            margin-top: 10px;
-            background: linear-gradient(90deg, #fdcb6e, #e17055);
-            /* Warna Emas/Pyro variasi */
-            border: none;
-            border-radius: 50px;
-            color: #2d3436;
-            font-weight: bold;
-            letter-spacing: 1px;
-            box-shadow: 0 5px 15px rgba(225, 112, 85, 0.4);
-            transition: 0.3s;
-        }
-
-        .btn-glow:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 25px rgba(253, 203, 110, 0.7);
-            color: black;
-        }
-
-        .text-error {
-            color: #ff7675;
-            font-size: 0.75rem;
-            margin-top: 5px;
-            display: block;
-            text-align: right;
-        }
-
-        /* Hide spin button number */
-        input[type=number]::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet">
+    <!-- Global CSS -->
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/register.css}">
+    
 </head>
 
-<body>
+<body class="auth-page">
+    <div class="auth-card">
+        <h2 class="auth-title">DAFTAR AKUN</h2>
+        <p class="auth-subtitle">Bergabung dengan Klan Inazuma</p>
 
-    <div class="register-card">
-        <h2 class="title">DAFTAR AKUN</h2>
-
-        <div th:if="${error}"
-            class="alert alert-danger bg-danger bg-opacity-25 border-0 text-white text-center py-2 mb-3 small">
-            <span th:text="${error}">Error</span>
+        <!-- Thymeleaf error message -->
+        <div th:if="${error}" class="auth-alert alert-error">
+            <span class="material-symbols-outlined">warning</span>
+            <span th:text="${error}">Error Message</span>
         </div>
 
+        <!-- Thymeleaf form with object binding -->
         <form th:action="@{/daftar}" th:object="${user}" method="post">
-
-            <div class="input-group-custom">
-                <label class="label-custom">Nama Lengkap</label>
-                <input type="text" th:field="*{namaLengkap}" class="input-field" placeholder="Masukkan Nama Lengkap"
-                    required>
-                <small class="text-error" th:if="${#fields.hasErrors('namaLengkap')}"
-                    th:errors="*{namaLengkap}"></small>
+            <div class="form-group">
+                <label class="form-label">Nama Lengkap</label>
+                <input type="text" th:field="*{namaLengkap}" class="form-input" placeholder="Masukkan Nama Lengkap" required>
+                <small class="error-message" th:if="${#fields.hasErrors('namaLengkap')}" th:errors="*{namaLengkap}"></small>
             </div>
 
-            <div class="input-group-custom">
-                <label class="label-custom">Nomor HP</label>
-                <input type="number" th:field="*{noHp}" class="input-field" placeholder="08xxxxx" required>
-                <small class="text-error" th:if="${#fields.hasErrors('noHp')}" th:errors="*{noHp}"></small>
+            <div class="form-group">
+                <label class="form-label">Nomor HP</label>
+                <input type="text" th:field="*{noHp}" class="form-input" placeholder="08xxxxx" pattern="[0-9]*" required>
+                <small class="error-message" th:if="${#fields.hasErrors('noHp')}" th:errors="*{noHp}"></small>
             </div>
 
-            <div class="row">
-                <div class="col-6">
-                    <div class="input-group-custom">
-                        <label class="label-custom">Username</label>
-                        <input type="text" th:field="*{username}" class="input-field" placeholder="Masukkan Username"
-                            required>
-                        <small class="text-error" th:if="${#fields.hasErrors('username')}"
-                            th:errors="*{username}"></small>
-                    </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" th:field="*{username}" class="form-input" placeholder="Masukkan Username" required>
+                    <small class="error-message" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></small>
                 </div>
-                <div class="col-6">
-                    <div class="input-group-custom">
-                        <label class="label-custom">Password</label>
-                        <input type="password" th:field="*{password}" class="input-field"
-                            placeholder="Masukkan Password" required>
-                        <small class="text-error" th:if="${#fields.hasErrors('password')}"
-                            th:errors="*{password}"></small>
-                    </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" th:field="*{password}" class="form-input" placeholder="Masukkan Password" required>
+                    <small class="error-message" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
                 </div>
             </div>
 
-            <button type="submit" class="btn-glow">GABUNG</button>
-
-            <div class="text-center mt-4">
-                <small style="color: #ccc;">Sudah punya akun? <a href="/login"
-                        style="color: #fdcb6e; text-decoration: none; font-weight: bold;">Login</a></small>
-            </div>
+            <button type="submit" class="auth-btn">GABUNG</button>
         </form>
+
+        <div class="auth-link">
+            <span>Sudah punya akun?</span>
+            <a th:href="@{/login}">Login Sekarang</a>
+        </div>
     </div>
-
 </body>
-
 </html>

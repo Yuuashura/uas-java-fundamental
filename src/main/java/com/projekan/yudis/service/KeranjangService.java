@@ -21,17 +21,19 @@ public class KeranjangService {
     @Autowired
     private ProdukRepository produkRepository;
 
-
     public List<Keranjang> getKeranjangByUser(User user) {
         return keranjangRepository.findByUser(user);
     }
 
-    // 2. Tambah ke Keranjang
+   // 2. FUNGSI TAMBAH KE KERANJANG (VALIDASI KETAT)
     public void tambahKeKeranjang(User user, Integer idProduct, Integer jumlah) {
         Produk produk = produkRepository.findById(idProduct).orElse(null);
         
         if (produk != null) {
-            // Cek dulu: Apakah barang ini sudah ada di keranjang user?
+            if (produk.getStock() <= 0) {
+                throw new RuntimeException("Stok habis");
+            }
+
             List<Keranjang> existingItems = keranjangRepository.findByUser(user);
             Keranjang itemAda = null;
 
@@ -43,16 +45,31 @@ public class KeranjangService {
             }
 
             if (itemAda != null) {
-                // JIKA SUDAH ADA: Update jumlahnya saja
-                itemAda.setJumlah(itemAda.getJumlah() + jumlah);
+                // === LOGIKA BARU ===
+                // Hitung total jika ditambahkan
+                int totalBaru = itemAda.getJumlah() + jumlah;
+
+                // Cek apakah melebihi stok?
+                if (totalBaru > produk.getStock()) {
+                    // LEMPAR ERROR: Jangan simpan, biarkan Controller menanganinya
+                    throw new RuntimeException("Total di keranjang melebihi stok tersedia!");
+                } 
+                
+                // Jika aman, update
+                itemAda.setJumlah(totalBaru);
                 keranjangRepository.save(itemAda);
+                
             } else {
-                // JIKA BELUM ADA: Buat baru
+                // JIKA BELUM ADA
+                if (jumlah > produk.getStock()) {
+                    throw new RuntimeException("Jumlah melebihi stok tersedia!");
+                }
+
                 Keranjang k = new Keranjang();
                 k.setUser(user);
                 k.setProduk(produk);
                 k.setJumlah(jumlah);
-                k.setHarga(produk.getHarga()); // Simpan harga saat masuk keranjang
+                k.setHarga(produk.getHarga());
                 k.setTanggalKeranjang(LocalDateTime.now());
                 keranjangRepository.save(k);
             }
@@ -66,12 +83,10 @@ public class KeranjangService {
 
     public int hitungTotalItem(User user) {
         List<Keranjang> list = keranjangRepository.findByUser(user);
-        // Menjumlahkan kolom 'jumlah' dari semua item
         return list.stream().mapToInt(Keranjang::getJumlah).sum();
     }
-    // ... method lain ...
 
-    // FUNGSI UPDATE JUMLAH (+/-)
+    // FUNGSI UPDATE JUMLAH (+/-) DI HALAMAN KERANJANG
     public void updateJumlah(User user, Integer idKeranjang, int perubahan) {
         Optional<Keranjang> cartOpt = keranjangRepository.findById(idKeranjang);
         
@@ -101,7 +116,6 @@ public class KeranjangService {
         if (cartOpt.isPresent()) {
             Keranjang cart = cartOpt.get();
             
-            // Validasi Pemilik
             if (!cart.getUser().getIdUser().equals(user.getIdUser())) return;
 
             int stokTersedia = cart.getProduk().getStock();
@@ -114,5 +128,4 @@ public class KeranjangService {
             keranjangRepository.save(cart);
         }
     }
-
 }

@@ -1,258 +1,463 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Nota Transaksi - Inazuma Market</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
-    
-    <link rel="stylesheet" th:href="@{/css/bootstrap-icons.css}">
-    
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Quicksand:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0"
+        rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+
     <style>
-        /* === ATMOSPHERE === */
+        /* === INVOICE STYLING === */
         body {
-            font-family: 'Quicksand', sans-serif;
-            background-color: #1e1535;
-            background-image: url('https://raw.githubusercontent.com/Yuuashura/assets/refs/heads/main/1362745.png');
-            background-attachment: fixed; background-size: cover; background-position: center;
-            color: #fff; min-height: 100vh;
-        }
-        body::after {
-            content: ''; position: fixed; inset: 0; background: rgba(10, 5, 20, 0.85); z-index: -1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
-        /* === NAVBAR === */
-        .navbar-glass {
-            background: rgba(30, 20, 60, 0.85); backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(162, 155, 254, 0.2);
+        .invoice-container {
+            max-width: 800px;
+            margin: 40px auto;
+            width: 100%;
+            padding: 0 20px;
         }
-        .brand-title { font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: 2px; color: #a29bfe; }
 
-        /* === INVOICE CARD === */
         .glass-card {
             background: rgba(40, 30, 70, 0.75);
             border: 1px solid rgba(162, 155, 254, 0.3);
-            border-radius: 20px; overflow: hidden;
-            box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(10px);
         }
 
         .invoice-header {
             background: rgba(162, 155, 254, 0.1);
             border-bottom: 1px solid rgba(162, 155, 254, 0.2);
-            padding: 30px; text-align: center;
+            padding: 30px;
+            text-align: center;
         }
 
-        /* BADGES */
-        .status-badge { font-size: 0.9rem; padding: 8px 15px; border-radius: 50px; letter-spacing: 1px; }
-        .bg-warning { background: rgba(255, 193, 7, 0.2) !important; color: #ffca2c; border: 1px solid #ffc107; }
-        .bg-success { background: rgba(25, 135, 84, 0.2) !important; color: #20c997; border: 1px solid #198754; }
-        .bg-info { background: rgba(13, 202, 240, 0.2) !important; color: #0dcaf0; border: 1px solid #0dcaf0; }
+        .invoice-body {
+            padding: 40px;
+        }
 
-        /* TABLE (Memastikan Transparan) */
-        .table { --bs-table-bg: transparent; --bs-table-color: #eee; border-color: rgba(255,255,255,0.1); }
-        th { font-family: 'Cinzel', serif; color: #fdcb6e; font-weight: normal; letter-spacing: 1px; }
-        
-        /* LIST GROUP (Memastikan Transparan) */
-        .list-group-item {
-            background-color: transparent !important;
+        /* STATUS BADGES */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+            padding: 8px 20px;
+            border-radius: 50px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            border: 1px solid;
+            margin-top: 15px;
+        }
+
+        .bg-warning {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffca2c;
+            border-color: #ffc107;
+        }
+
+        .bg-success {
+            background: rgba(25, 135, 84, 0.2);
+            color: #20c997;
+            border-color: #198754;
+        }
+
+        .bg-info {
+            background: rgba(13, 202, 240, 0.2);
+            color: #0dcaf0;
+            border-color: #0dcaf0;
+        }
+
+        .bg-danger {
+            background: rgba(220, 53, 69, 0.2);
+            color: #ea868f;
+            border-color: #dc3545;
+        }
+
+        /* INFO GRID */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .info-title {
+            color: #a29bfe;
+            font-weight: bold;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-text {
+            margin-bottom: 5px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .info-text-sm {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* TABLE */
+        .table-items {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        .table-items th {
+            text-align: left;
+            color: #fdcb6e;
+            font-family: 'Cinzel', serif;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(162, 155, 254, 0.3);
+            font-weight: normal;
+        }
+
+        .table-items td {
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            vertical-align: top;
+        }
+
+        .text-end {
+            text-align: right;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        /* SUMMARY */
+        .summary-list {
+            margin-left: auto;
+            max-width: 300px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 1.2rem;
+            font-weight: bold;
             color: #fff;
-            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .total-val {
+            font-family: 'Cinzel', serif;
+            color: #fdcb6e;
         }
 
         /* PAYMENT TABS */
-        .nav-tabs { border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .nav-link { color: #aaa; border: none; font-weight: bold; transition: 0.3s; }
-        .nav-link:hover { color: #fff; }
-        .nav-link.active {
-            background: rgba(162, 155, 254, 0.2) !important;
-            color: #a29bfe !important;
-            border-radius: 10px 10px 0 0;
-            border: 1px solid rgba(162, 155, 254, 0.2);
-            border-bottom: none;
+        .payment-methods {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
         }
-        
-        /* QRIS Image Style */
-        .qris-img {
-            max-width: 250px; width: 100%;
-            border-radius: 10px; border: 2px solid #fff;
-            box-shadow: 0 0 20px rgba(255,255,255,0.2);
+
+        .pm-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #aaa;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
         }
-        
-        .total-section { font-family: 'Cinzel', serif; color: #fdcb6e; font-size: 1.5rem; font-weight: 700; }
-        .text-purple { color: #a29bfe; }
-        .text-provinsi { color: #0dcaf0; font-weight: bold; text-shadow: 0 0 5px rgba(13, 202, 240, 0.3); }
+
+        .pm-btn.active,
+        .pm-btn:hover {
+            background: rgba(162, 155, 254, 0.2);
+            color: #a29bfe;
+            border-color: #a29bfe;
+        }
+
+        .payment-content {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .payment-content.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .invoice-body {
+                padding: 20px;
+            }
+        }
     </style>
 </head>
+
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark navbar-glass p-3 sticky-top">
-    <div class="container">
-        <a class="navbar-brand d-flex align-items-center" href="/">
-            <i class="bi bi-lightning-charge-fill me-2" style="color: #a29bfe;"></i>
-            <span class="brand-title">INAZUMA MARKET</span>
-        </a>
-        <a th:href="${backUrl}" class="btn btn-sm btn-outline-light rounded-pill px-3">
-            <i class="bi bi-arrow-left me-2"></i> Kembali
-        </a>
-    </div>
-</nav>
+    <nav class="navbar-glass"
+        style="position: sticky; top: 0; z-index: 100; padding: 15px 0; background: rgba(30, 20, 60, 0.95); border-bottom: 1px solid rgba(162, 155, 254, 0.2);">
+        <div class="container"
+            style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
+            <a href="/"
+                style="text-decoration: none; color: #a29bfe; font-family: 'Cinzel'; font-weight: bold; font-size: 1.2rem; display: flex; align-items: center; gap: 8px;">
+                <span class="material-symbols-outlined">bolt</span>
+                INAZUMA MARKET
+            </a>
+            <a th:href="${backUrl}"
+                style="border: 1px solid #fff; border-radius: 50px; padding: 5px 15px; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 5px; font-size: 0.8rem;">
+                <span class="material-symbols-outlined" style="font-size: 1.1rem;">arrow_back</span> Kembali
+            </a>
+        </div>
+    </nav>
 
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-9">
-            
-            <div class="glass-card">
-                
-                <div class="invoice-header">
-                    <h2 class="fw-bold m-0 text-white" style="font-family: 'Cinzel'; letter-spacing: 3px;">INVOICE</h2>
-                    <p class="m-0 text-white-50 mt-1">ID Transaksi: <span class="text-info fw-bold" th:text="'#' + ${transaksi.idTransaksi}">#1</span></p>
-                    
-                    <div class="mt-3">
-                        <span th:if="${transaksi.status.name() == 'PENDING'}" class="badge status-badge bg-warning">
-                            <i class="bi bi-hourglass-split"></i> MENUNGGU PEMBAYARAN
-                        </span>
-                        <span th:if="${transaksi.status.name() == 'PAID'}" class="badge status-badge bg-success">
-                            <i class="bi bi-check-circle-fill"></i> SUDAH DIBAYAR
-                        </span>
-                        <span th:if="${transaksi.status.name() == 'SENT'}" class="badge status-badge bg-info">
-                            <i class="bi bi-truck"></i> SEDANG DIKIRIM
-                        </span>
-                        <span th:if="${transaksi.status.name() == 'DONE'}" class="badge status-badge bg-success">
-                            <i class="bi bi-star-fill"></i> SELESAI
-                        </span>
+    <div class="invoice-container">
+        <div class="glass-card">
+
+            <div class="invoice-header">
+                <h2 style="font-family: 'Cinzel'; letter-spacing: 3px; margin: 0; color: #fff;">INVOICE</h2>
+                <p style="margin: 5px 0 0; color: rgba(255,255,255,0.5);">
+                    ID Dekrit: <span style="color: #0dcaf0; font-weight: bold;"
+                        th:text="'#' + ${transaksi.idTransaksi}">#1</span>
+                </p>
+
+                <div class="mt-3" th:if="${transaksi.status != null}">
+                    <span th:if="${transaksi.status.name() == 'PENDING'}" class="status-badge bg-warning">
+                        <span class="material-symbols-outlined">hourglass_top</span> MENUNGGU PEMBAYARAN
+                    </span>
+                    <span th:if="${transaksi.status.name() == 'PAID'}" class="status-badge bg-success">
+                        <span class="material-symbols-outlined">check_circle</span> SUDAH DIBAYAR
+                    </span>
+                    <span th:if="${transaksi.status.name() == 'SENT'}" class="status-badge bg-info">
+                        <span class="material-symbols-outlined">local_shipping</span> SEDANG DIKIRIM
+                    </span>
+                    <span th:if="${transaksi.status.name() == 'DONE'}" class="status-badge bg-success">
+                        <span class="material-symbols-outlined">verified</span> SELESAI
+                    </span>
+                    <span th:if="${transaksi.status.name() == 'CANCEL'}" class="status-badge bg-danger">
+                        <span class="material-symbols-outlined">cancel</span> DIBATALKAN
+                    </span>
+                </div>
+                <div class="mt-3" th:unless="${transaksi.status != null}">
+                    <span class="status-badge bg-danger">STATUS TIDAK DIKETAHUI</span>
+                </div>
+
+            </div>
+
+            <div class="invoice-body">
+
+                <div class="info-grid">
+
+                    <div>
+                        <div class="info-title">
+                            <span class="material-symbols-outlined" style="font-size: 1rem;">person</span> Penerima
+                        </div>
+
+                        <div th:if="${transaksi.user != null}">
+                            <div class="info-text" style="font-weight: bold; font-size: 1.1rem;"
+                                th:text="${transaksi.user.namaLengkap}">Nama User</div>
+                            <div class="info-text">
+                                <span class="material-symbols-outlined"
+                                    style="font-size: 1rem; vertical-align: middle;">call</span>
+                                <span th:text="${transaksi.user.noHp}">0812</span>
+                            </div>
+                            <div class="info-text-sm">
+                                <span class="material-symbols-outlined"
+                                    style="font-size: 1rem; vertical-align: middle;">mail</span>
+                                <span th:text="${transaksi.user.username}">user</span>
+                            </div>
+                        </div>
+
+                        <div th:unless="${transaksi.user != null}">
+                            <div class="info-text" style="font-weight: bold; font-size: 1.1rem;"
+                                th:text="${transaksi.namaPembeliSnapshot}">Nama Arsip</div>
+                            <div class="info-text">
+                                <span class="material-symbols-outlined"
+                                    style="font-size: 1rem; vertical-align: middle;">call</span>
+                                <span th:text="${transaksi.noHpPembeliSnapshot}">0812</span>
+                            </div>
+                            <div class="info-text-sm" style="color: #ff6b6b;">
+                                <span class="material-symbols-outlined"
+                                    style="font-size: 1rem; vertical-align: middle;">mail</span>
+                                <span th:text="${transaksi.usernamePembeliSnapshot}">user</span>
+                                (User Dihapus)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="text-align: right;">
+                        <div class="info-title" style="justify-content: flex-end;">
+                            <span class="material-symbols-outlined" style="font-size: 1rem;">location_on</span> Alamat
+                            Pengiriman
+                        </div>
+                        <div class="info-text" style="white-space: pre-wrap;" th:text="${transaksi.alamatPengiriman}">
+                            Jl. Contoh No. 1</div>
+
+                        <div class="info-text" style="color: #0dcaf0; font-weight: bold; margin-top: 5px;">
+                            Wilayah:
+                            <span th:if="${transaksi.provinsi != null}"
+                                th:text="${transaksi.provinsi.namaProvinsi}">Jawa Barat</span>
+                            <span th:unless="${transaksi.provinsi != null}"
+                                th:text="${transaksi.namaProvinsiSnapshot}">Jawa Barat (Arsip)</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="card-body p-4 p-md-5">
-                    
-                    <div class="row mb-4">
-                        <div class="col-md-6 mb-3 mb-md-0">
-                            <h6 class="text-purple text-uppercase small fw-bold mb-3"><i class="bi bi-person-circle me-2"></i>Penerima</h6>
-                            <p class="fw-bold mb-1 fs-5" th:text="${transaksi.user.namaLengkap}">Nama User</p>
-                            <p class="mb-1 text-white-50"><i class="bi bi-telephone me-2"></i><span th:text="${transaksi.user.noHp}">0812xxxx</span></p>
-                            <p class="small text-white-50"><i class="bi bi-envelope me-2"></i><span th:text="${transaksi.user.username}">Username</span></p>
-                        </div>
-                        <div class="col-md-6 text-md-end">
-                            <h6 class="text-purple text-uppercase small fw-bold mb-3"><i class="bi bi-geo-alt-fill me-2"></i>Alamat Pengiriman</h6>
-                            <p class="mb-1 text-white-50" th:text="${transaksi.alamatPengiriman}">Jl. Contoh No. 1</p>
-                            <p class="text-provinsi fs-5" th:text="${transaksi.provinsi.namaProvinsi}">Jawa Barat</p>
-                        </div>
-                    </div>
+                <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
 
-                    <hr class="border-secondary border-opacity-50 my-4">
-
-                    <h6 class="fw-bold mb-3 text-purple">Rincian Artefak</h6>
-                    <div class="table-responsive">
-                        <table class="table align-middle">
-                            <thead style="border-bottom: 1px solid rgba(162, 155, 254, 0.3);">
-                                <tr>
-                                    <th>Produk</th>
-                                    <th class="text-center">Jml</th>
-                                    <th class="text-end">Harga</th>
-                                    <th class="text-end">Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="detail : ${detailTransaksi}"> 
-                                    <td>
-                                        <span class="fw-bold" th:if="${detail.namaProductSnapshot != null}" th:text="${detail.namaProductSnapshot}">Nama</span>
-                                        <span class="fw-bold" th:unless="${detail.namaProductSnapshot != null}" th:text="${detail.produk != null ? detail.produk.namaProduct : 'Produk Dihapus'}">Nama</span>
-                                    </td>
-                                    <td class="text-center" th:text="${detail.jumlah}">1</td>
-                                    <td class="text-end" th:text="'Rp ' + ${detail.hargaSatuan}">Rp 10.000</td>
-                                    <td class="text-end fw-bold text-warning" th:text="'Rp ' + ${detail.subtotal}">Rp 10.000</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="row justify-content-end mt-3">
-                        <div class="col-md-5">
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item d-flex justify-content-between px-0">
-                                    <span class="text-white-50">Subtotal Barang</span>
-                                    <span th:text="'Rp ' + ${transaksi.totalHargaBarang}">Rp 0</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between px-0">
-                                    <span class="text-white-50">Ongkir (<span class="text-info" th:text="${transaksi.provinsi.namaProvinsi}">Prov</span>)</span>
-                                    <span th:text="'Rp ' + ${transaksi.totalOngkir}">Rp 0</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between px-0 pt-3 border-top border-secondary border-opacity-50">
-                                    <span class="fs-5 fw-bold text-white">Total Bayar</span>
-                                    <span class="total-section" th:text="'Rp ' + ${transaksi.grandTotal}">Rp 0</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div th:if="${transaksi.status.name() == 'PENDING'}" class="mt-5">
-                        <h5 class="fw-bold text-center mb-4 text-purple" style="font-family: 'Cinzel';">METODE PEMBAYARAN</h5>
-                        
-                        <ul class="nav nav-tabs justify-content-center mb-4" id="paymentTab" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="qris-tab" data-bs-toggle="tab" data-bs-target="#qris" type="button" role="tab"><i class="bi bi-qr-code-scan me-2"></i>QRIS (Instant)</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="bank-tab" data-bs-toggle="tab" data-bs-target="#bank" type="button" role="tab"><i class="bi bi-bank me-2"></i>Transfer Bank</button>
-                            </li>
-                        </ul>
-
-                        <div class="tab-content" id="paymentTabContent">
-                            
-                            <div class="tab-pane fade show active text-center" id="qris" role="tabpanel">
-                                <div class="p-4 rounded-3" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.1);">
-                                    <p class="text-white-50 mb-3">Scan QRIS ini menggunakan GoPay, OVO, Dana, ShopeePay, atau BCA Mobile:</p>
-                                    
-                                    <img src="https://files.catbox.moe/fecb2r.png" 
-                                         alt="QRIS Toko Yudis" class="qris-img mb-3">
-                                    
-                                    <p class="small text-warning"><i class="bi bi-info-circle me-1"></i> Screenshot bukti bayar setelah berhasil scan.</p>
+                <h4 style="font-family: 'Cinzel'; color: #a29bfe; margin-bottom: 20px;">Rincian Artefak</h4>
+                <table class="table-items">
+                    <thead>
+                        <tr>
+                            <th width="50%">Produk</th>
+                            <th class="text-center">Jml</th>
+                            <th class="text-end">Harga</th>
+                            <th class="text-end">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="detail : ${detailTransaksi}">
+                            <td>
+                                <div style="font-weight: bold; font-size: 1rem;"
+                                    th:text="${detail.namaProductSnapshot != null ? detail.namaProductSnapshot : (detail.produk != null ? detail.produk.namaProduct : 'Produk Tidak Dikenal')}">
+                                    Nama Produk
                                 </div>
+                                <div style="font-size: 0.85rem; color: rgba(255,255,255,0.5); margin-top: 4px;"
+                                    th:if="${detail.deskripsiProductSnapshot != null}"
+                                    th:text="${#strings.abbreviate(detail.deskripsiProductSnapshot, 60)}">
+                                    Deskripsi singkat...
+                                </div>
+                            </td>
+                            <td class="text-center" th:text="${detail.jumlah}">1</td>
+                            <td class="text-end" th:text="'Rp ' + ${detail.hargaSatuan}">10.000</td>
+                            <td class="text-end" style="font-weight: bold; color: #fdcb6e;"
+                                th:text="'Rp ' + ${detail.subtotal}">10.000</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="summary-list">
+                    <div class="summary-row">
+                        <span>Subtotal Barang</span>
+                        <span th:text="'Rp ' + ${transaksi.totalHargaBarang}">Rp 0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Ongkir</span>
+                        <span th:text="'Rp ' + ${transaksi.totalOngkir}">Rp 0</span>
+                    </div>
+                    <div class="summary-total">
+                        <span>Total Bayar</span>
+                        <span class="total-val" th:text="'Rp ' + ${transaksi.grandTotal}">Rp 0</span>
+                    </div>
+                </div>
+
+                <div th:if="${transaksi.status != null && transaksi.status.name() == 'PENDING'}"
+                    style="margin-top: 50px;">
+                    <h5 style="text-align: center; font-family: 'Cinzel'; color: #a29bfe; margin-bottom: 20px;">METODE
+                        PEMBAYARAN</h5>
+
+                    <div class="payment-methods">
+                        <button onclick="showPayment('qris')" class="pm-btn active" id="btn-qris">
+                            <span class="material-symbols-outlined">qr_code_scanner</span> QRIS
+                        </button>
+                        <button onclick="showPayment('bank')" class="pm-btn" id="btn-bank">
+                            <span class="material-symbols-outlined">account_balance</span> Transfer
+                        </button>
+                    </div>
+
+                    <div id="qris" class="payment-content show">
+                        <p style="color: rgba(255,255,255,0.5); margin-bottom: 15px;">Scan QRIS ini menggunakan GoPay,
+                            OVO, atau DANA:</p>
+                        <img src="https://files.catbox.moe/fecb2r.png" alt="QRIS"
+                            style="max-width: 200px; border-radius: 10px; border: 2px solid #fff;">
+                    </div>
+
+                    <div id="bank" class="payment-content">
+                        <div style="display: grid; gap: 15px; grid-template-columns: 1fr 1fr;">
+                            <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;">
+                                <div style="font-weight: bold; margin-bottom: 5px;">BCA</div>
+                                <div style="font-size: 1.2rem; color: #0dcaf0; font-weight: bold;">123-456-7890</div>
+                                <div style="font-size: 0.8rem; color: #aaa;">a.n. Admin Shogun</div>
                             </div>
-
-                            <div class="tab-pane fade" id="bank" role="tabpanel">
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <div class="p-3 rounded-3 h-100" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.1);">
-                                            <div class="d-flex justify-content-between mb-2">
-                                                <span class="fw-bold text-white">BCA (Bank Central Asia)</span>
-                                                <i class="bi bi-wallet2 text-purple"></i>
-                                            </div>
-                                            <h4 class="fw-bold text-info m-0" style="letter-spacing: 2px;">123-456-7890</h4>
-                                            <small class="text-white-50">a.n. Yudistira Syaputra</small>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="p-3 rounded-3 h-100" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.1);">
-                                            <div class="d-flex justify-content-between mb-2">
-                                                <span class="fw-bold text-white">DANA / OVO / GOPAY</span>
-                                                <i class="bi bi-phone text-purple"></i>
-                                            </div>
-                                            <h4 class="fw-bold text-info m-0" style="letter-spacing: 2px;">0895-2951-9141</h4>
-                                            <small class="text-white-50">a.n. Yudistira Syaputra</small>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;">
+                                <div style="font-weight: bold; margin-bottom: 5px;">DANA</div>
+                                <div style="font-size: 1.2rem; color: #0dcaf0; font-weight: bold;">0812-3456-7890</div>
+                                <div style="font-size: 0.8rem; color: #aaa;">a.n. Admin Shogun</div>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="text-center mt-5">
-                            <p class="text-white-50 mb-3">Sudah melakukan pembayaran?</p>
-                            <a th:href="'https://wa.me/6289529519141?text=Halo%20Admin%20Yudis,%20saya%20sudah%20melakukan%20pembayaran%20untuk%20ID%20Transaksi:%20%23' + ${transaksi.idTransaksi} + '%20sebesar%20Rp%20' + ${transaksi.grandTotal} + '.%20Mohon%20diproses.'" 
-                               target="_blank" 
-                               class="btn btn-success btn-lg rounded-pill px-5 shadow-lg fw-bold">
-                                <i class="bi bi-whatsapp me-2"></i> Konfirmasi Bukti Bayar
-                            </a>
-                        </div>
+                    <div style="text-align: center; margin-top: 40px;">
+                        <a th:href="'https://wa.me/6289529519141?text=Halo%20Admin,%20saya%20sudah%20transfer%20untuk%20Order%20%23' + ${transaksi.idTransaksi}"
+                            target="_blank"
+                            style="display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, #fdcb6e, #e17055); color: #000; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-weight: bold;">
+                            <span class="material-symbols-outlined">chat</span> Konfirmasi Bukti Bayar
+                        </a>
                     </div>
-                    </div>
+                </div>
+
             </div>
         </div>
     </div>
-</div>
 
-<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <script>
+        function showPayment(type) {
+            document.querySelectorAll('.payment-content').forEach(el => el.classList.remove('show'));
+            document.querySelectorAll('.pm-btn').forEach(el => el.classList.remove('active'));
+
+            document.getElementById(type).classList.add('show');
+            document.getElementById('btn-' + type).classList.add('active');
+        }
+    </script>
+
 </body>
+
 </html>

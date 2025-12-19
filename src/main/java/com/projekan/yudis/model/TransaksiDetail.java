@@ -37,8 +37,12 @@ public class TransaksiDetail {
     // --- SNAPSHOT DENGAN TIPE STRING (BASE64) ---
     @Column(nullable = true)
     private String namaProductSnapshot; // Nama produk saat dibeli
-    
-    // Gunakan Tipe STRING dan definisikan sebagai LONGTEXT untuk menyimpan Base64 yang panjang
+
+    // Gunakan Tipe STRING dan definisikan sebagai LONGTEXT untuk menyimpan Base64
+    // yang panjang
     @Column(columnDefinition = "LONGTEXT", nullable = true)
     private String gambarSnapshot; // Gambar Base64 (String) saat dibeli
+    @Column(name = "deskripsi_product_snapshot", columnDefinition = "TEXT")
+    private String deskripsiProductSnapshot;
+
 }

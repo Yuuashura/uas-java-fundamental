@@ -1,0 +1,492 @@
+/* === 1. RESET & VARIABLES === */
+:root {
+    --primary: #8a2be2;
+    --primary-dark: #5a1e9c;
+    --secondary: #00b4d8;
+    --gold: #ffd700;
+    --bg-dark: #1e1535;
+    --glass: rgba(30, 20, 60, 0.7);
+    --border: rgba(162, 155, 254, 0.3);
+    --text-white: #fff;
+    --text-muted: #aaa;
+    --font-main: 'Quicksand', sans-serif;
+    --font-title: 'Cinzel', serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-main);
+    background-color: var(--bg-dark);
+    background-image: url('https://raw.githubusercontent.com/Yuuashura/assets/refs/heads/main/1362745.png');
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    color: var(--text-white);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 5, 20, 0.85);
+    z-index: -1;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: 0.3s;
+}
+
+ul {
+    list-style: none;
+}
+
+/* === GOOGLE ICONS SETTING === */
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    vertical-align: middle;
+    user-select: none;
+}
+
+/* === 2. LAYOUT UTILITIES === */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    width: 100%;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.justify-end {
+    justify-content: flex-end;
+}
+
+.gap-1 {
+    gap: 10px;
+}
+
+.gap-2 {
+    gap: 20px;
+}
+
+.gap-3 {
+    gap: 30px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* === 3. COMPONENTS: NAVBAR === */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--glass);
+    backdrop-filter: blur(15px);
+    border-bottom: 1px solid var(--border);
+    padding: 15px 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.nav-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand {
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--text-white);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.3s;
+}
+
+.brand:hover {
+    transform: scale(1.05);
+}
+
+.brand span {
+    color: #a29bfe;
+    font-size: 1.8rem;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* === 4. COMPONENTS: DROPDOWN === */
+.dropdown {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: 120%;
+    background: rgba(20, 15, 35, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    min-width: 220px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    z-index: 1000;
+    padding: 8px 0;
+}
+
+.dropdown.active .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    color: var(--text-muted);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.dropdown-item::before {
+    content: '';
+    position: absolute;
+    left: -100%;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(162, 155, 254, 0.1), transparent);
+    transition: 0.5s;
+}
+
+.dropdown-item:hover::before {
+    left: 100%;
+}
+
+.dropdown-item:hover {
+    background: rgba(162, 155, 254, 0.15);
+    color: #fff;
+    padding-left: 25px;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item span.icon {
+    font-size: 1.2rem;
+    color: #a29bfe;
+}
+
+/* === 5. COMPONENTS: BUTTONS & BADGES === */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    font-size: 0.95rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-outline {
+    border: 2px solid #fff;
+    background: transparent;
+    color: #fff;
+}
+
+.btn-outline:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #a29bfe;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(162, 155, 254, 0.3);
+}
+
+.btn-gold {
+    background: linear-gradient(135deg, var(--gold), #ff9d00);
+    color: #2d3436;
+    font-weight: 700;
+    border: none;
+}
+
+.btn-gold:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(255, 157, 0, 0.4);
+    background: linear-gradient(135deg, #ffd700, #ffa726);
+}
+
+.btn-gold:active {
+    transform: translateY(-1px);
+}
+
+.badge {
+    padding: 3px 8px;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: bold;
+    background: linear-gradient(45deg, #e056fd, #be2edd);
+    color: #fff;
+    position: absolute;
+    top: -8px;
+    right: -12px;
+    min-width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(224, 86, 253, 0.3);
+    animation: pulse 2s infinite;
+}
+
+/* === 6. COMPONENTS: FORMS === */
+.form-control,
+.form-select {
+    width: 100%;
+    padding: 14px 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--border);
+    border-radius: 50px;
+    color: #fff;
+    outline: none;
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #a29bfe;
+    box-shadow: 0 0 0 3px rgba(162, 155, 254, 0.2);
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.form-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%23a29bfe'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 20px center;
+    padding-right: 50px;
+    cursor: pointer;
+}
+
+.form-select option {
+    background: #1e1535;
+    color: #fff;
+    padding: 10px;
+}
+
+/* === 7. ANIMATIONS & EFFECTS === */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes shimmer {
+    100% {
+        left: 100%;
+    }
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    margin: 20px auto;
+    border: 4px solid rgba(162, 155, 254, 0.2);
+    border-top: 4px solid #a29bfe;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* === 8. GLASS EFFECTS === */
+.glass-effect {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+}
+
+/* === 9. GRADIENT TEXT === */
+.gradient-text {
+    background: linear-gradient(45deg, #a29bfe, #8a2be2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.text-glow {
+    text-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+}
+
+.text-glow-gold {
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+/* === 10. HOVER EFFECTS === */
+.hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+}
+
+/* === 11. CATEGORY TAGS === */
+.category-tag {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin: 3px;
+    background: rgba(138, 43, 226, 0.2);
+    border: 1px solid rgba(138, 43, 226, 0.5);
+    color: #a29bfe;
+    transition: all 0.3s;
+}
+
+.category-tag:hover {
+    background: rgba(138, 43, 226, 0.4);
+    transform: translateY(-2px);
+}
+
+/* === 12. RESPONSIVE DESIGN === */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+
+    .brand {
+        font-size: 1.3rem;
+    }
+
+    .brand span {
+        font-size: 1.5rem;
+    }
+
+    .nav-links {
+        gap: 15px;
+    }
+
+    .btn {
+        padding: 10px 18px;
+        font-size: 0.9rem;
+    }
+
+    .dropdown-menu {
+        min-width: 180px;
+    }
+}
+
+@media (max-width: 480px) {
+    .brand {
+        font-size: 1.1rem;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+    }
+
+    .form-control,
+    .form-select {
+        padding: 12px 16px;
+        font-size: 0.9rem;
+    }
+}
