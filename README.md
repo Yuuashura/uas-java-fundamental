@@ -50,10 +50,11 @@ Untuk memenuhi standar **Java Fundamental**, program ini menggunakan:
 ---
 
 ## 👤 Identitas Mahasiswa
-* **Nama**: Yudistira Saputra (Yudis)
-* **NIM**: [Isi NIM Kamu]
+* **Nama**: Yudistira Syaputra
+* **NIM**: 02032411037
 * **Program Studi**: Teknik Informatika
 * **Kampus**: Universitas Nasional Pasim
+* **Organisasi**: Pemberdayaam Umat Berkelanjutan (PUB)
 
 ---
 *"Ad Astra Abyssosque!"* – Dibuat dengan ❤️ oleh [Yuuashura](https://github.com/Yuuashura)
