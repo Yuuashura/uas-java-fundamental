@@ -49,7 +49,7 @@ public class MainController {
         }
 
         // B. Ambil Produk Halaman Pertama (Page 0, Size 20)
-        int pageSize = 20;
+        int pageSize = 8;
         Page<Produk> pageProduk = produkService.getProdukPaged(keyword, kategori, sortBy, 0, pageSize);
 
         // Kirim Data ke HTML
@@ -105,10 +105,10 @@ public class MainController {
         return "register";
     }
 
-@PostMapping("/daftar")
+    @PostMapping("/daftar")
     public String prosesDaftar(@Valid @ModelAttribute User user,
-                               BindingResult bindingResult,
-                               Model model) {
+            BindingResult bindingResult,
+            Model model) {
 
         // 1. Cek Validasi Form (Password pendek, dll)
         if (bindingResult.hasErrors()) {
@@ -128,6 +128,7 @@ public class MainController {
             return "register";
         }
     }
+
     @GetMapping("/login")
     public String formLogin(@CookieValue(value = "USER_TOKEN", required = false) String token) {
         User currentUser = userService.getUserFromToken(token);

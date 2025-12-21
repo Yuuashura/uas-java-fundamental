@@ -4,7 +4,6 @@ import com.projekan.yudis.model.Keranjang;
 import com.projekan.yudis.model.Transaksi;
 import com.projekan.yudis.model.User;
 import com.projekan.yudis.repository.KeranjangRepository;
-import com.projekan.yudis.repository.TransaksiDetailRepository;
 import com.projekan.yudis.repository.TransaksiRepository;
 import com.projekan.yudis.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

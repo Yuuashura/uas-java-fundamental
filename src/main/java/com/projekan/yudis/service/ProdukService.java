@@ -29,16 +29,24 @@ public class ProdukService {
     // FUNGSI UTAMA: MENCARI DATA DENGAN FILTER (KEYWORD, KATEGORI, SORT, PAGE)
     // ========================================================================
     public Page<Produk> getProdukPaged(String keyword, String kategori, String sortBy, int page, int size) {
-        
+
         // 1. Tentukan Logika Sorting
         Sort sort = Sort.by(Sort.Direction.ASC, "idProduct"); // Default urut ID
 
         if (sortBy != null) {
             switch (sortBy) {
-                case "termurah": sort = Sort.by(Sort.Direction.ASC, "harga"); break;
-                case "termahal": sort = Sort.by(Sort.Direction.DESC, "harga"); break;
-                case "nama": sort = Sort.by(Sort.Direction.ASC, "namaProduct"); break;
-                case "stok": sort = Sort.by(Sort.Direction.DESC, "stock"); break;
+                case "termurah":
+                    sort = Sort.by(Sort.Direction.ASC, "harga");
+                    break;
+                case "termahal":
+                    sort = Sort.by(Sort.Direction.DESC, "harga");
+                    break;
+                case "nama":
+                    sort = Sort.by(Sort.Direction.ASC, "namaProduct");
+                    break;
+                case "stok":
+                    sort = Sort.by(Sort.Direction.DESC, "stock");
+                    break;
             }
         }
 
@@ -52,7 +60,8 @@ public class ProdukService {
         // 4. Eksekusi Query Sesuai Kondisi
         if (hasKeyword && hasKategori) {
             // Jika User mencari Nama DAN memilih Kategori
-            return produkRepository.findByNamaProductContainingIgnoreCaseAndKategoriProduct(keyword, kategori, pageable);
+            return produkRepository.findByNamaProductContainingIgnoreCaseAndKategoriProduct(keyword, kategori,
+                    pageable);
         } else if (hasKategori) {
             // Jika User hanya memilih Kategori
             return produkRepository.findByKategoriProduct(kategori, pageable);

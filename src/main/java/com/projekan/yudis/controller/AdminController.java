@@ -68,7 +68,7 @@ public class AdminController {
     }
 
     // 2. FORM TAMBAH PRODUK
-    @GetMapping("/produk/tambah")
+    @GetMapping("/produk/tambah") 
     public String formTambah(Model model,
             @CookieValue(value = "USER_TOKEN", required = false) String token) {
         if (!isAdmin(token))

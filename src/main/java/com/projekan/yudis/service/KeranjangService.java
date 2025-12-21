@@ -21,6 +21,7 @@ public class KeranjangService {
     @Autowired
     private ProdukRepository produkRepository;
 
+    // 1. UNTUK MENGAMBIL DATA KERANJANG
     public List<Keranjang> getKeranjangByUser(User user) {
         return keranjangRepository.findByUser(user);
     }
@@ -45,7 +46,6 @@ public class KeranjangService {
             }
 
             if (itemAda != null) {
-                // === LOGIKA BARU ===
                 // Hitung total jika ditambahkan
                 int totalBaru = itemAda.getJumlah() + jumlah;
 
@@ -64,7 +64,6 @@ public class KeranjangService {
                 if (jumlah > produk.getStock()) {
                     throw new RuntimeException("Jumlah melebihi stok tersedia!");
                 }
-
                 Keranjang k = new Keranjang();
                 k.setUser(user);
                 k.setProduk(produk);
@@ -109,7 +108,6 @@ public class KeranjangService {
         }
     }
 
-    // FUNGSI SET JUMLAH MANUAL (Input Ketik)
     public void setJumlahPasti(User user, Integer idKeranjang, int jumlahBaru) {
         Optional<Keranjang> cartOpt = keranjangRepository.findById(idKeranjang);
         
@@ -120,7 +118,6 @@ public class KeranjangService {
 
             int stokTersedia = cart.getProduk().getStock();
 
-            // Validasi: Kalau input < 1, paksa jadi 1. Kalau > stok, mentok di stok.
             if (jumlahBaru < 1) jumlahBaru = 1;
             if (jumlahBaru > stokTersedia) jumlahBaru = stokTersedia;
 

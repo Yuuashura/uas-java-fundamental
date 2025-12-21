@@ -26,7 +26,7 @@ public class User {
     private String namaLengkap;
     
     @NotEmpty(message = "Nomor HP wajib diisi")
-    @Pattern(regexp = "^[0-9]+$", message = "Nomor HP harus berupa angka")
+    // @Pattern(regexp = "^[0-9]+$", message = "Nomor HP harus berupa angka")
     @Size(min = 10, max = 15, message = "Nomor HP tidak valid (10-15 angka)")
     private String noHp; 
 
