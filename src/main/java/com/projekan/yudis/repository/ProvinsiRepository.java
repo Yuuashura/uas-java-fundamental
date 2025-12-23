@@ -1,9 +1,13 @@
 package com.projekan.yudis.repository;
 
 import com.projekan.yudis.model.Provinsi;
+
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProvinsiRepository extends JpaRepository<Provinsi, Integer> {
+    List<Provinsi> findAllByOrderByNamaProvinsiAsc();
 }

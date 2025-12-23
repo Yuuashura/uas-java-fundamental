@@ -30,9 +30,7 @@ public class MainController {
     @Autowired
     private KeranjangService keranjangService;
 
-    // ==========================================
     // 1. HALAMAN UTAMA (INDEX) - Load Awal
-    // ==========================================
     @GetMapping("/")
     public String index(Model model,
             @CookieValue(value = "USER_TOKEN", required = false) String token,
@@ -49,7 +47,7 @@ public class MainController {
         }
 
         // B. Ambil Produk Halaman Pertama (Page 0, Size 20)
-        int pageSize = 8;
+        int pageSize = 50;
         Page<Produk> pageProduk = produkService.getProdukPaged(keyword, kategori, sortBy, 0, pageSize);
 
         // Kirim Data ke HTML
@@ -132,8 +130,9 @@ public class MainController {
     @GetMapping("/login")
     public String formLogin(@CookieValue(value = "USER_TOKEN", required = false) String token) {
         User currentUser = userService.getUserFromToken(token);
-        if (currentUser != null)
+        if (currentUser != null){
             return "redirect:/";
+        }
         return "login";
     }
 
@@ -144,6 +143,7 @@ public class MainController {
             Model model) {
 
         String token = userService.login(username, password);
+
 
         if (token != null) {
             Cookie cookie = new Cookie("USER_TOKEN", token);
@@ -174,11 +174,7 @@ public class MainController {
         response.addCookie(cookie);
         return "redirect:/";
     }
-
-    // ==========================================
     // 4. FITUR PROFIL USER
-    // ==========================================
-
     @GetMapping("/profil")
     public String halamanProfil(Model model,
             @CookieValue(value = "USER_TOKEN", required = false) String token) {

@@ -1,7 +1,7 @@
 package com.projekan.yudis.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*; // Import Validasi
+import jakarta.validation.constraints.*;
 import lombok.Data;
 
 @Entity

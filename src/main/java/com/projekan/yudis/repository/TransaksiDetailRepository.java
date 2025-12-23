@@ -8,6 +8,5 @@ import java.util.List;
 
 @Repository
 public interface TransaksiDetailRepository extends JpaRepository<TransaksiDetail, Integer> {
-    // Cari detail berdasarkan Transaksi Induknya
     List<TransaksiDetail> findByTransaksi(Transaksi transaksi);
 }

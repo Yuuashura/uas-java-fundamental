@@ -28,7 +28,6 @@ public class ProvinsiService {
         // Cari by ID, jika tidak ada kembalikan null
         return provinsiRepository.findById(id).orElse(null);
     }
-    // =====================================================
 
     public void saveProvinsi(Provinsi provinsi) {
         provinsiRepository.save(provinsi);

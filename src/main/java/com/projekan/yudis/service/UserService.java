@@ -19,10 +19,10 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private KeranjangRepository keranjangRepository; // Wajib ada
+    private KeranjangRepository keranjangRepository; 
 
     @Autowired
-    private TransaksiRepository transaksiRepository; // Wajib ada
+    private TransaksiRepository transaksiRepository; 
 
     // REGISTER
     public String register(User user) {
@@ -39,6 +39,7 @@ public class UserService {
         return "OK";
     }
 
+    // LOGIN
     public String login(String username, String password) {
         User user = userRepository.findByUsername(username).orElse(null);
         if (user != null && user.getPassword().equals(password)) {
@@ -133,7 +134,7 @@ public class UserService {
             List<Transaksi> transaksiList = transaksiRepository.findByUser(user);
             for (Transaksi trx : transaksiList) {
                 trx.setUser(null);
-                transaksiRepository.save(trx); // Update transaksi
+                transaksiRepository.save(trx); 
             }
 
             // 3. BARU HAPUS USER

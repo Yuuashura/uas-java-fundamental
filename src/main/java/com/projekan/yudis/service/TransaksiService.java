@@ -29,41 +29,32 @@ public class TransaksiService {
 
     @Transactional
     public Transaksi buatTransaksi(User user, List<Integer> idKeranjangList, Integer idProvinsi, String alamat) {
-
         // 1. Ambil Data Ongkir (Provinsi)
         Provinsi provinsi = provinsiRepository.findById(idProvinsi)
                 .orElseThrow(() -> new RuntimeException("Provinsi tidak ditemukan"));
-
         // 2. Siapkan Header Transaksi
         Transaksi transaksi = new Transaksi();
-
         // --- A. DATA USER (Relasi & Snapshot) ---
         transaksi.setUser(user); // Relasi Asli
         // Snapshot: Simpan data teks user agar aman jika User dihapus
         transaksi.setNamaPembeliSnapshot(user.getNamaLengkap());
         transaksi.setNoHpPembeliSnapshot(user.getNoHp());
         transaksi.setUsernamePembeliSnapshot(user.getUsername());
-
         // --- B. DATA WILAYAH (Relasi & Snapshot) ---
         transaksi.setProvinsi(provinsi); // Relasi Asli
         // Snapshot: Simpan nama provinsi agar aman jika Master Provinsi dihapus
         transaksi.setNamaProvinsiSnapshot(provinsi.getNamaProvinsi());
-
         // --- C. DATA LAINNYA ---
         transaksi.setAlamatPengiriman(alamat);
         transaksi.setTotalOngkir(provinsi.getHargaOngkir()); // Snapshot Harga Ongkir
         transaksi.setStatus(Transaksi.Status.PENDING);
         transaksi.setTanggalTransaksi(java.time.LocalDateTime.now()); // Set Waktu Sekarang
-
         // Simpan Header dulu untuk mendapatkan ID Transaksi
         transaksi = transaksiRepository.save(transaksi);
-
         int totalHargaBarang = 0;
-
         // 3. Loop Barang yang dipilih dari Keranjang
         for (Integer idCart : idKeranjangList) {
             java.util.Optional<Keranjang> cartOpt = keranjangRepository.findById(idCart);
-
             if (cartOpt.isPresent()) {
                 Keranjang cart = cartOpt.get();
                 Produk produk = cart.getProduk();
@@ -153,7 +144,6 @@ public class TransaksiService {
     }
 
     // ... import TransaksiDetail, Produk ...
-
     @Transactional
     public void batalkanTransaksiOlehUser(Integer idTransaksi, Integer idUser) {
         // 1. Cari Transaksi
@@ -179,7 +169,6 @@ public class TransaksiService {
                 produkRepository.save(produk);
             }
         }
-
         // 5. Ubah Status
         transaksi.setStatus(Transaksi.Status.CANCEL);
         transaksiRepository.save(transaksi);

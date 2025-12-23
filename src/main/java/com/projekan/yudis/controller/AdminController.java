@@ -158,9 +158,7 @@ public class AdminController {
         return "redirect:/admin/transaksi";
     }
 
-    // =========================================================
     // 3. MANAJEMEN USER
-    // =========================================================
     @GetMapping("/users")
     public String listUsers(Model model, @CookieValue(value = "USER_TOKEN", required = false) String token) {
         if (!isAdmin(token))
@@ -170,6 +168,7 @@ public class AdminController {
         return "admin/list_user";
     }
 
+    // 3. HAPUS USER
     @GetMapping("/users/hapus/{id}")
     public String hapusUser(@PathVariable Integer id,
             @CookieValue(value = "USER_TOKEN", required = false) String token) {
@@ -179,11 +178,7 @@ public class AdminController {
         return "redirect:/admin/users";
     }
 
-  
-
-    // =========================================================
     // 4. MANAJEMEN PROVINSI (ONGKIR)
-    // =========================================================
     @GetMapping("/provinsi")
     public String listProvinsi(Model model, @CookieValue(value = "USER_TOKEN", required = false) String token) {
         if (!isAdmin(token))

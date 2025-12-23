@@ -25,9 +25,7 @@ public class ProdukService {
     @Autowired
     private KeranjangRepository keranjangRepository;
 
-    // ========================================================================
     // FUNGSI UTAMA: MENCARI DATA DENGAN FILTER (KEYWORD, KATEGORI, SORT, PAGE)
-    // ========================================================================
     public Page<Produk> getProdukPaged(String keyword, String kategori, String sortBy, int page, int size) {
 
         // 1. Tentukan Logika Sorting

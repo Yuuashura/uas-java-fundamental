@@ -52,7 +52,7 @@ public class TransaksiController {
         model.addAttribute("user", user);
         model.addAttribute("listBarang", listBarangDipilih);
         model.addAttribute("subtotal", subtotal);
-        model.addAttribute("listProvinsi", provinsiRepository.findAll()); // Untuk dropdown ongkir
+        model.addAttribute("listProvinsi", provinsiRepository.findAllByOrderByNamaProvinsiAsc()); // Untuk dropdown ongkir
 
         return "checkout"; // Ke file checkout.html
     }
@@ -61,7 +61,6 @@ public class TransaksiController {
     @PostMapping("/transaksi/proses")
     public String prosesCheckout(@RequestParam(name = "idKeranjang") List<Integer> idKeranjangList,
             @RequestParam Integer idProvinsi,
-            // Menerima input terpisah
             @RequestParam String kabupaten,
             @RequestParam String kecamatan,
             @RequestParam String detailAlamat,
@@ -129,7 +128,7 @@ public class TransaksiController {
         // Ambil list transaksi milik user ini
         List<Transaksi> listTransaksi = transaksiService.getTransaksiByUser(user);
 
-        // (Opsional) Urutkan dari yang terbaru (ID terbesar di atas)
+        // Urutkan dari yang terbaru (ID terbesar di atas)
         listTransaksi.sort((t1, t2) -> t2.getIdTransaksi().compareTo(t1.getIdTransaksi()));
 
         model.addAttribute("listTransaksi", listTransaksi);
@@ -139,11 +138,20 @@ public class TransaksiController {
     }
 
     @GetMapping("/riwayat/terima/{id}")
-    public String terimaPesanan(@PathVariable Integer id,
-            @CookieValue(value = "USER_TOKEN", required = false) String token) {
+    public String selesaikanPesanan(@PathVariable("id") int idTransaksi,
+            @CookieValue(value = "USER_TOKEN", required = false) String token,
+            RedirectAttributes redirectAttributes) {
         User user = userService.getUserFromToken(token);
-        if (user != null) {
-            // Panggil service yang melakukan validasi kepemilikan
+        if (user == null) {
+            return "redirect:/login";
+        }
+        try {
+            transaksiService.selesaikanPesanan(user, idTransaksi);
+            redirectAttributes.addFlashAttribute("success", "Terima kasih! Pesanan telah dikonfirmasi diterima.");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Terjadi kesalahan saat menyelesaikan pesanan.");
         }
         return "redirect:/riwayat";
     }

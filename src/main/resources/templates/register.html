@@ -4,12 +4,9 @@
     <title>Daftar - Inazuma Realm</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet">
-    <!-- Global CSS -->
     <link rel="stylesheet" th:href="@{/css/global.css}">
     <link rel="stylesheet" th:href="@{/css/register.css}">
     
@@ -20,33 +17,28 @@
         <h2 class="auth-title">DAFTAR AKUN</h2>
         <p class="auth-subtitle">Bergabung dengan Klan Inazuma</p>
 
-        <!-- Thymeleaf error message -->
         <div th:if="${error}" class="auth-alert alert-error">
             <span class="material-symbols-outlined">warning</span>
             <span th:text="${error}">Error Message</span>
         </div>
-
-        <!-- Thymeleaf form with object binding -->
         <form th:action="@{/daftar}" th:object="${user}" method="post">
             <div class="form-group">
                 <label class="form-label">Nama Lengkap</label>
                 <input type="text" th:field="*{namaLengkap}" class="form-input" placeholder="Masukkan Nama Lengkap" required>
                 <small class="error-message" th:if="${#fields.hasErrors('namaLengkap')}" th:errors="*{namaLengkap}"></small>
             </div>
-
             <div class="form-group">
                 <label class="form-label">Nomor HP</label>
                 <input type="text" th:field="*{noHp}" class="form-input" placeholder="08xxxxx" pattern="[0-9]*" required>
                 <small class="error-message" th:if="${#fields.hasErrors('noHp')}" th:errors="*{noHp}"></small>
             </div>
-
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label">Username</label>
                     <input type="text" th:field="*{username}" class="form-input" placeholder="Masukkan Username" required>
                     <small class="error-message" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></small>
                 </div>
-                
+            
                 <div class="form-group">
                     <label class="form-label">Password</label>
                     <input type="password" th:field="*{password}" class="form-input" placeholder="Masukkan Password" required>
