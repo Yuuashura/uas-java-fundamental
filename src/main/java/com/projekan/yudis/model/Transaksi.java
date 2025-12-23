@@ -16,15 +16,10 @@ public class Transaksi {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idTransaksi;
 
-    // Relasi ke User (Bisa NULL jika user dihapus, karena data sudah dibackup di
-    // snapshot)
     @ManyToOne
     @JoinColumn(name = "id_user", nullable = true)
     private User user;
 
-    // === SNAPSHOT DATA PEMBELI (BARU) ===
-    // Data ini diisi saat checkout. Jika User dihapus, data ini tetap tampil di
-    // Invoice.
     @Column(name = "nama_pembeli_snapshot")
     private String namaPembeliSnapshot;
 
@@ -34,12 +29,10 @@ public class Transaksi {
     @Column(name = "username_pembeli_snapshot")
     private String usernamePembeliSnapshot;
 
-    // Kirim ke mana? (Untuk ambil data ongkir)
     @ManyToOne
     @JoinColumn(name = "id_provinsi", nullable = true)
     private Provinsi provinsi;
 
-    // === TAMBAHAN SNAPSHOT PROVINSI ===
     @Column(name = "nama_provinsi_snapshot")
     private String namaProvinsiSnapshot;
 
@@ -50,7 +43,7 @@ public class Transaksi {
     private Integer grandTotal; // Total + Ongkir
 
     @Column(columnDefinition = "TEXT")
-    private String alamatPengiriman; // Alamat lengkap jalan/rt/rw
+    private String alamatPengiriman; // Alamat lengkap
 
     @Enumerated(EnumType.STRING)
     private Status status;

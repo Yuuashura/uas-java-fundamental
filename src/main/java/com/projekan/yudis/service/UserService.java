@@ -141,19 +141,6 @@ public class UserService {
         }
     }
 
-    public void promoteToAdmin(Integer id) {
-        User u = userRepository.findById(id).orElse(null);
-        if (u != null) {
-            u.setRole(User.Role.ADMIN);
-            userRepository.save(u);
-        }
-    }
+   
 
-    public void demoteToUser(Integer id) {
-        User u = userRepository.findById(id).orElse(null);
-        if (u != null) {
-            u.setRole(User.Role.USER);
-            userRepository.save(u);
-        }
-    }
-}
+  }

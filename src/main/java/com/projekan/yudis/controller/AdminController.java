@@ -54,7 +54,7 @@ public class AdminController {
         // Panggil Service Pagination (Sekarang mendukung Filter Kategori)
         Page<Produk> pageProduk = produkService.getProdukPaged(keyword, kategori, sortBy, page, pageSize);
 
-        model.addAttribute("listProduk", pageProduk); // Kirim Page object untuk navigasi (next/prev)git 
+        model.addAttribute("listProduk", pageProduk); // Kirim Page object untuk navigasi (next/prev)git
         model.addAttribute("user", userService.getUserFromToken(token));
 
         // Balikin param biar filter tidak hilang saat klik halaman 2, 3, dst
@@ -68,7 +68,7 @@ public class AdminController {
     }
 
     // 2. FORM TAMBAH PRODUK
-    @GetMapping("/produk/tambah") 
+    @GetMapping("/produk/tambah")
     public String formTambah(Model model,
             @CookieValue(value = "USER_TOKEN", required = false) String token) {
         if (!isAdmin(token))
@@ -179,23 +179,7 @@ public class AdminController {
         return "redirect:/admin/users";
     }
 
-    @GetMapping("/users/promote/{id}")
-    public String promoteUser(@PathVariable Integer id,
-            @CookieValue(value = "USER_TOKEN", required = false) String token) {
-        if (!isAdmin(token))
-            return "redirect:/login";
-        userService.promoteToAdmin(id);
-        return "redirect:/admin/users";
-    }
-
-    @GetMapping("/users/demote/{id}")
-    public String demoteUser(@PathVariable Integer id,
-            @CookieValue(value = "USER_TOKEN", required = false) String token) {
-        if (!isAdmin(token))
-            return "redirect:/login";
-        userService.demoteToUser(id);
-        return "redirect:/admin/users";
-    }
+  
 
     // =========================================================
     // 4. MANAJEMEN PROVINSI (ONGKIR)

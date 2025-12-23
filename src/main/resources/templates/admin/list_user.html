@@ -119,9 +119,7 @@
                                 <span th:classappend="${u.role.name() == 'ADMIN'} ? 'role-badge role-admin' : 'role-badge role-user'" th:text="${u.role}">ROLE</span>
                             </td>
                             <td style="text-align: right;">
-                                <a th:if="${u.role.name() == 'USER'}" th:href="@{/admin/users/promote/{id}(id=${u.idUser})}" class="btn btn-outline" style="padding: 6px 10px; display: inline-flex; border-color: #ffd700; color: #ffd700;" title="Jadikan Admin">
-                                    <span class="material-symbols-outlined" style="font-size: 1.1rem;">arrow_circle_up</span>
-                                </a>
+  
                                 <a th:href="@{/admin/users/hapus/{id}(id=${u.idUser})}" class="btn btn-outline" style="padding: 6px 10px; display: inline-flex; border-color: #ff6b6b; color: #ff6b6b;" onclick="return confirm('Hapus penduduk ini?')" title="Hapus">
                                     <span class="material-symbols-outlined" style="font-size: 1.1rem;">delete</span>
                                 </a>
