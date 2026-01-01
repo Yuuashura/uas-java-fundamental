@@ -77,8 +77,8 @@ public class MainController {
             @RequestParam(value = "kategori", required = false) String kategori, // <-- Parameter Kategori
             @RequestParam(value = "sortBy", required = false) String sortBy) {
 
-        int pageSize = 20;
-
+        int pageSize = 50;
+        
         // Ambil data halaman ke-X
         Page<Produk> pageProduk = produkService.getProdukPaged(keyword, kategori, sortBy, page, pageSize);
 
@@ -147,7 +147,7 @@ public class MainController {
 
         if (token != null) {
             Cookie cookie = new Cookie("USER_TOKEN", token);
-            cookie.setMaxAge(24 * 60 * 60); // 1 Hari
+            cookie.setMaxAge(86400); // 1 Hari
             cookie.setPath("/");
             cookie.setHttpOnly(true);
             response.addCookie(cookie);

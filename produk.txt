@@ -1,0 +1,124 @@
+INSERT INTO produk (nama_product, harga, stock, kategori_product, deskripsi_product, gambar_product) VALUES 
+
+-- KATEGORI: GADGET (Pengganti Elektronik)
+('Laptop ROG Zephyrus G14', 25000000, 5, 'Gadget', 'Laptop gaming spek dewa rata kanan.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('iPhone 15 Pro Max', 22000000, 8, 'Gadget', 'Titanium body, kamera super jernih.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Samsung Galaxy S24 Ultra', 21000000, 7, 'Gadget', 'Zoom bulan 100x dan fitur AI canggih.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Mouse Logitech G Pro X', 1500000, 20, 'Gadget', 'Mouse wireless super ringan untuk e-sport.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Keyboard Mechanical Keychron', 1200000, 15, 'Gadget', 'Suara ketikan renyah, layout compact.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Headset HyperX Cloud II', 1100000, 12, 'Gadget', 'Surround sound 7.1, nyaman dipakai lama.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Sony WH-1000XM5', 4500000, 6, 'Gadget', 'Noise cancelling terbaik di kelasnya.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('iPad Air 5 M1', 9500000, 8, 'Gadget', 'Tablet powerful untuk ilustrasi dan kerja.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Xiaomi Powerbank 20000mAh', 350000, 50, 'Gadget', 'Fast charging, kapasitas badak.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('PlayStation 5 Disc Edition', 9200000, 5, 'Gadget', 'Next gen gaming console 4K 120fps.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Nintendo Switch OLED', 4800000, 8, 'Gadget', 'Layar OLED cerah, bisa portable.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('TWS Anker Soundcore', 250000, 100, 'Gadget', 'Earphone bluetooth bass mantap.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('SSD Samsung 980 Pro 1TB', 1800000, 25, 'Gadget', 'Penyimpanan super cepat NVMe.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Kamera Sony Alpha A6400', 11000000, 4, 'Gadget', 'Kamera mirrorless untuk vlog.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('GoPro Hero 12 Black', 7000000, 6, 'Gadget', 'Action cam tahan banting.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+
+-- KATEGORI: APPAREL (Pengganti Fashion Pria/Wanita)
+('Kemeja Flannel Uniqlo', 399000, 20, 'Apparel', 'Motif kotak-kotak, bahan lembut.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Kaos Polos Hitam Premium', 50000, 200, 'Apparel', 'Cotton combed 30s adem.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Celana Chino Slim Fit', 180000, 40, 'Apparel', 'Cocok untuk kerja atau hangout.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Jaket Denim Levis', 899000, 10, 'Apparel', 'Model timeless, makin belel makin keren.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Hoodie H&M Oversize', 450000, 25, 'Apparel', 'Bahan fleece tebal dan hangat.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Sepatu Converse High', 750000, 15, 'Apparel', 'Sepatu sejuta umat.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Nike Air Jordan 1 Low', 2100000, 5, 'Apparel', 'Sneakers hypebeast.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Gamis Syari Premium', 250000, 30, 'Apparel', 'Bahan wolfis jatuh.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Hijab Pashmina Plisket', 45000, 100, 'Apparel', 'Mudah dibentuk tanpa setrika.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Blouse Korean Style', 120000, 50, 'Apparel', 'Kerah ruffle lucu.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Rok Plisket Panjang', 85000, 60, 'Apparel', 'Warna pastel, pinggang karet.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Jaket Cardigan Rajut', 95000, 55, 'Apparel', 'Outer santai bahan rajut.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Celana Kulot Highwaist', 110000, 45, 'Apparel', 'Bikin kaki terlihat jenjang.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Setelan Piyama Satin', 135000, 30, 'Apparel', 'Baju tidur mewah dan adem.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Jersey Timnas Indonesia', 150000, 50, 'Apparel', 'Bahan dryfit, logo garuda di dada.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+
+-- KATEGORI: AKSESORIS (Jam, Kacamata, Perhiasan)
+('Jam Tangan Casio G-Shock', 1500000, 10, 'Aksesoris', 'Tahan banting dan air.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Kacamata Hitam Aviator', 75000, 50, 'Aksesoris', 'Gaya klasik ala pilot.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Dompet Kulit Pria', 150000, 40, 'Aksesoris', 'Kulit sapi asli garut.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Tas Selempang Miniso', 150000, 40, 'Aksesoris', 'Desain minimalis.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Totebag Kanvas', 35000, 80, 'Aksesoris', 'Motif estetik untuk kuliah.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Jam Tangan Daniel Wellington', 2100000, 8, 'Aksesoris', 'Elegan dan tipis.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Anting Perak Sterling', 80000, 50, 'Aksesoris', 'Anti karat aman untuk kulit.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Kalung Titanium Pria', 60000, 40, 'Aksesoris', 'Model rantai, anti hitam.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Topi Snapback NY', 120000, 30, 'Aksesoris', 'Topi baseball original.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Gelang Batu Alam', 40000, 60, 'Aksesoris', 'Batu lava stone hitam.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+
+-- KATEGORI: SENJATA (Replika & Mainan)
+('Pedang Elucidator (Replika)', 1500000, 3, 'Senjata', 'Pedang hitam Kirito bahan baja tumpul.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Pedang Nichirin Tanjiro', 850000, 5, 'Senjata', 'Katana kayu untuk cosplay.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Shuriken Naruto Set', 150000, 20, 'Senjata', 'Bahan plastik aman, isi 3 pcs.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Pistol Nerf Elite', 450000, 15, 'Senjata', 'Mainan tembak peluru busa.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Keyblade Kingdom Hearts', 1200000, 2, 'Senjata', 'Replika prop ukuran asli.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Tombak Staff of Homa', 1800000, 2, 'Senjata', 'Replika senjata Genshin Impact.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+
+-- KATEGORI: FIGURE (Action Figure & Pajangan)
+('Action Figure Naruto', 350000, 10, 'Figure', 'Tinggi 20cm detail presisi.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Gundam HG Barbatos', 250000, 15, 'Figure', 'Model kit plastik perlu dirakit.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Funko Pop Iron Man', 200000, 18, 'Figure', 'Figure kepala besar lucu.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Nendoroid Hatsune Miku', 650000, 8, 'Figure', 'Bisa ganti-ganti muka dan pose.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Figure One Piece Luffy', 450000, 12, 'Figure', 'Mode Gear 5 Nika.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Hotwheels Treasure Hunt', 50000, 50, 'Figure', 'Mobil diecast langka.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Lego Technic Ferrari', 5000000, 2, 'Figure', 'Ribuan parts detail mesin asli.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+
+-- KATEGORI: COSPLAY (Kostum & Wig)
+('Jubah Akatsuki', 300000, 10, 'Cosplay', 'Jubah hitam awan merah + ikat kepala.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Seragam Sekolah Jepang', 250000, 20, 'Cosplay', 'Seifuku sailor moon style.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Wig Biru Panjang (Rem)', 150000, 15, 'Cosplay', 'Rambut palsu sintetis tahan panas.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Kostum Spider-Man', 450000, 8, 'Cosplay', 'Bahan spandex melar full body.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Topeng Anbu', 50000, 30, 'Cosplay', 'Topeng bahan PVC tebal.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+
+-- KATEGORI: BONEKA (Plushie)
+('Boneka Teddy Bear Jumbo', 300000, 10, 'Boneka', 'Ukuran 1 meter, bulu halus.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Plushie Pochita', 120000, 25, 'Boneka', 'Boneka gergaji mesin lucu.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Bantal Leher Among Us', 55000, 40, 'Boneka', 'Empuk untuk travel.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Boneka Boba Tea', 85000, 30, 'Boneka', 'Boneka bentuk minuman boba.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Guling Kucing Panjang', 150000, 15, 'Boneka', 'Guling bentuk kucing 80cm.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+
+-- KATEGORI: MAKANAN (Food)
+('Keripik Singkong Pedas', 15000, 200, 'Makanan', 'Pedas nampol bikin nagih.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Basreng Stik Jeruk', 18000, 150, 'Makanan', 'Bakso goreng rasa daun jeruk.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Kopi Bubuk Robusta', 45000, 50, 'Makanan', 'Kopi murni tanpa campuran 250gr.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Indomie Goreng (Dus)', 125000, 40, 'Makanan', 'Satu dus isi 40 bungkus.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Coklat Silverqueen', 18000, 100, 'Makanan', 'Coklat dengan kacang mete.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Madu Murni Hutan', 85000, 30, 'Makanan', 'Madu liar asli Sumbawa.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Kurma Sukari 1kg', 65000, 25, 'Makanan', 'Kurma raja daging tebal.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Sambal Bawang Botol', 25000, 45, 'Makanan', 'Pedas gila tanpa pengawet.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Seblak Instan', 12000, 150, 'Makanan', 'Tinggal seduh air panas.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Pocky Matcha', 10000, 80, 'Makanan', 'Biskuit stik rasa teh hijau.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+
+-- KATEGORI: BUKU (Novel & Komik)
+('Novel Laskar Pelangi', 85000, 20, 'Buku', 'Kisah inspiratif anak belitung.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Komik One Piece Vol 100', 45000, 50, 'Buku', 'Edisi spesial wano arc.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Novel Tere Liye - Bumi', 95000, 30, 'Buku', 'Petualangan dunia paralel.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Buku Tulis Sidu Pack', 35000, 60, 'Buku', 'Satu pak isi 10 buku.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Atomic Habits', 120000, 15, 'Buku', 'Buku self improvement best seller.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+
+-- KATEGORI: MERCHANDISE (Pajangan Lainnya)
+('Gantungan Kunci Akrilik', 15000, 200, 'Merchandise', 'Ganci karakter anime random.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Poster Dinding A3', 25000, 100, 'Merchandise', 'Bahan art carton tebal.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Mug Custom Nama', 45000, 50, 'Merchandise', 'Gelas keramik cetak foto.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Kartu Pokemon Booster', 75000, 80, 'Merchandise', 'Gacha kartu TCG original.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Lightstick KPOP', 350000, 10, 'Merchandise', 'Tongkat lampu konser.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Stiker Laptop Pack', 20000, 150, 'Merchandise', 'Isi 50 pcs tahan air.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+
+-- KATEGORI: MATERIAL (Bahan & Flora)
+('Bibit Bunga Matahari', 5000, 100, 'Material', 'Benih tanaman hias.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Kayu Balok Jati Belanda', 35000, 40, 'Material', 'Untuk kerajinan tangan DIY.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Cat Akrilik Set', 85000, 25, 'Material', 'Cat melukis 12 warna.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Kain Perca Katun', 15000, 60, 'Material', 'Sisa kain untuk jahit.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Pupuk Organik Cair', 25000, 50, 'Material', 'Penyubur tanaman hias.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+
+-- KATEGORI: LAINNYA (Perabotan & Campuran)
+('Meja Belajar Lipat', 75000, 40, 'Lainnya', 'Kaki besi kokoh.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Lampu Tidur Proyektor', 65000, 30, 'Lainnya', 'Proyeksi bintang kamar.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Rak Sepatu Susun', 45000, 50, 'Lainnya', 'Bahan plastik bongkar pasang.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Sprei Kasur No 1', 120000, 25, 'Lainnya', 'Bahan disperse tidak luntur.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Termos Air Panas', 85000, 40, 'Lainnya', 'Tahan panas 12 jam.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Helm Motor Half Face', 250000, 15, 'Lainnya', 'SNI kaca ganda.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Oli Motor Matic', 45000, 30, 'Lainnya', 'Pelumas mesin 0.8L.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Sapu Ijuk Lantai', 25000, 60, 'Lainnya', 'Gagang kayu awet.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Payung Lipat Anti UV', 45000, 50, 'Lainnya', 'Lapisan hitam anti panas.', 'https://h.top4top.io/p_36535n0g81.jpg'),
+('Kipas Angin Mini', 30000, 100, 'Lainnya', 'Portable baterai cas.', 'https://h.top4top.io/p_36535n0g81.jpg');

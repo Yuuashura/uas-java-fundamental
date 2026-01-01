@@ -38,30 +38,32 @@ public class KeranjangController {
         model.addAttribute("produk", produk);
         return "detail-product"; // Mengarah ke template detail-product.html
     }
-// 2. PROSES TAMBAH KE KERANJANG
+
+    // 2. PROSES TAMBAH KE KERANJANG
     @PostMapping("/keranjang/tambah")
     public String tambahKeranjang(@RequestParam Integer idProduct,
-                                  @RequestParam Integer jumlah,
-                                  @CookieValue(value = "USER_TOKEN", required = false) String token) {
-        
+            @RequestParam Integer jumlah,
+            @CookieValue(value = "USER_TOKEN", required = false) String token) {
+
         User user = userService.getUserFromToken(token);
         if (user == null) {
-            return "redirect:/login"; 
+            return "redirect:/login";
         }
 
         try {
             // Coba tambahkan
             keranjangService.tambahKeKeranjang(user, idProduct, jumlah);
-            
+
             // Jika sukses
             return "redirect:/produk/" + idProduct + "?sukses=true";
-            
+
         } catch (RuntimeException e) {
             // Jika GAGAL (Stok tidak cukup)
             // Redirect kembali dengan pesan error
             return "redirect:/produk/" + idProduct + "?error=stock";
         }
     }
+
     // 3. HALAMAN LIHAT KERANJANG
     @GetMapping("/keranjang")
     public String lihatKeranjang(Model model,

@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TransaksiService {
@@ -28,7 +29,7 @@ public class TransaksiService {
     private ProvinsiRepository provinsiRepository;
 
     @Transactional
-    public Transaksi buatTransaksi(User user, List<Integer> idKeranjangList, Integer idProvinsi, String alamat) {
+    public Transaksi  buatTransaksi(User user, List<Integer> idKeranjangList, Integer idProvinsi, String alamat) {
         // 1. Ambil Data Ongkir (Provinsi)
         Provinsi provinsi = provinsiRepository.findById(idProvinsi)
                 .orElseThrow(() -> new RuntimeException("Provinsi tidak ditemukan"));
@@ -51,14 +52,16 @@ public class TransaksiService {
         transaksi.setTanggalTransaksi(java.time.LocalDateTime.now()); // Set Waktu Sekarang
         // Simpan Header dulu untuk mendapatkan ID Transaksi
         transaksi = transaksiRepository.save(transaksi);
+
         int totalHargaBarang = 0;
+
         // 3. Loop Barang yang dipilih dari Keranjang
         for (Integer idCart : idKeranjangList) {
-            java.util.Optional<Keranjang> cartOpt = keranjangRepository.findById(idCart);
+            Optional<Keranjang> cartOpt = keranjangRepository.findById(idCart);
+
             if (cartOpt.isPresent()) {
                 Keranjang cart = cartOpt.get();
                 Produk produk = cart.getProduk();
-
                 // Cek Stok
                 if (produk.getStock() < cart.getJumlah()) {
                     throw new RuntimeException("Stok habis untuk produk: " + produk.getNamaProduct());
@@ -102,6 +105,7 @@ public class TransaksiService {
         return transaksiRepository.save(transaksi);
     }
 
+    
     // Ambil Riwayat Transaksi User
     public List<Transaksi> getTransaksiByUser(User user) {
         return transaksiRepository.findByUser(user);

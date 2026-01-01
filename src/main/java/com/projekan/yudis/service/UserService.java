@@ -19,10 +19,10 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private KeranjangRepository keranjangRepository; 
+    private KeranjangRepository keranjangRepository;
 
     @Autowired
-    private TransaksiRepository transaksiRepository; 
+    private TransaksiRepository transaksiRepository;
 
     // REGISTER
     public String register(User user) {
@@ -134,7 +134,7 @@ public class UserService {
             List<Transaksi> transaksiList = transaksiRepository.findByUser(user);
             for (Transaksi trx : transaksiList) {
                 trx.setUser(null);
-                transaksiRepository.save(trx); 
+                transaksiRepository.save(trx);
             }
 
             // 3. BARU HAPUS USER
@@ -142,6 +142,4 @@ public class UserService {
         }
     }
 
-   
-
-  }
+}

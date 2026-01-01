@@ -169,6 +169,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!response.ok) throw new Error('Gagal memuat data');
 
                 const products = await response.json();
+                console.log('Loaded products:', products);
 
                 if (products && products.length > 0) {
                     renderProducts(products);

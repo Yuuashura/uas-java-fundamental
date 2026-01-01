@@ -26,10 +26,10 @@ public class KeranjangService {
         return keranjangRepository.findByUser(user);
     }
 
-   // 2. FUNGSI TAMBAH KE KERANJANG (VALIDASI KETAT)
+    // 2. FUNGSI TAMBAH KE KERANJANG (VALIDASI KETAT)
     public void tambahKeKeranjang(User user, Integer idProduct, Integer jumlah) {
         Produk produk = produkRepository.findById(idProduct).orElse(null);
-        
+
         if (produk != null) {
             if (produk.getStock() <= 0) {
                 throw new RuntimeException("Stok habis");
@@ -53,17 +53,18 @@ public class KeranjangService {
                 if (totalBaru > produk.getStock()) {
                     // LEMPAR ERROR: Jangan simpan, biarkan Controller menanganinya
                     throw new RuntimeException("Total di keranjang melebihi stok tersedia!");
-                } 
-                
+                }
+
                 // Jika aman, update
                 itemAda.setJumlah(totalBaru);
                 keranjangRepository.save(itemAda);
-                
+
             } else {
                 // JIKA BELUM ADA
                 if (jumlah > produk.getStock()) {
                     throw new RuntimeException("Jumlah melebihi stok tersedia!");
                 }
+
                 Keranjang k = new Keranjang();
                 k.setUser(user);
                 k.setProduk(produk);
@@ -88,10 +89,10 @@ public class KeranjangService {
     // FUNGSI UPDATE JUMLAH (+/-) DI HALAMAN KERANJANG
     public void updateJumlah(User user, Integer idKeranjang, int perubahan) {
         Optional<Keranjang> cartOpt = keranjangRepository.findById(idKeranjang);
-        
+
         if (cartOpt.isPresent()) {
             Keranjang cart = cartOpt.get();
-            
+
             // Validasi Keamanan: Pastikan ini keranjang milik user yang login
             if (!cart.getUser().getIdUser().equals(user.getIdUser())) {
                 return;
@@ -110,17 +111,17 @@ public class KeranjangService {
 
     public void setJumlahPasti(User user, Integer idKeranjang, int jumlahBaru) {
         Optional<Keranjang> cartOpt = keranjangRepository.findById(idKeranjang);
-        
+
         if (cartOpt.isPresent()) {
             Keranjang cart = cartOpt.get();
-            
-            if (!cart.getUser().getIdUser().equals(user.getIdUser())) return;
 
+            if (!cart.getUser().getIdUser().equals(user.getIdUser()))
+                return; // yaa kosongg 
             int stokTersedia = cart.getProduk().getStock();
-
-            if (jumlahBaru < 1) jumlahBaru = 1;
-            if (jumlahBaru > stokTersedia) jumlahBaru = stokTersedia;
-
+            if (jumlahBaru < 1)
+                jumlahBaru = 1;
+            if (jumlahBaru > stokTersedia)
+                jumlahBaru = stokTersedia;
             cart.setJumlah(jumlahBaru);
             keranjangRepository.save(cart);
         }
